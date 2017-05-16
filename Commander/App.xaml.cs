@@ -14,7 +14,6 @@ using WebServer;
 
 namespace Commander
 {
-    // TODO: pid in EnumWindows überprüfen
     // TODO: WebServer in Git local auf Google
     // TODO: Hook einbauen, dann Programm schließen
     // TODO: AssemblyResolver in Commander.exe
