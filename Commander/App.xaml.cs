@@ -16,8 +16,9 @@ namespace Commander
 {
     // TODO: pid in EnumWindows überprüfen
     // TODO: WebServer in Git local auf Google
-    // TODO: Hook- einbauen, dann Programm schließen
-    // Commander als Dll laden im Prozessraum von Google, dann ersrt Webserver starten
+    // TODO: Hook einbauen, dann Programm schließen
+    // TODO: AssemblyResolver in Commander.exe
+    // TODO: Commander als Dll laden im Prozessraum von Google, dann ersrt Webserver starten
     public partial class App : Application
     {
         public App()
