@@ -14,6 +14,10 @@ using WebServer;
 
 namespace Commander
 {
+    // TODO: pid in EnumWindows überprüfen
+    // TODO: WebServer in Git local auf Google
+    // TODO: Hook- einbauen, dann Programm schließen
+    // Commander als Dll laden im Prozessraum von Google, dann ersrt Webserver starten
     public partial class App : Application
     {
         public App()
@@ -60,15 +64,13 @@ namespace Commander
             };
             process.Start();
 
-
-            var eid = GetProcessId(process.Handle);
-
-            MessageBox.Show($"{eid}");
-
-            int u = 0;
+            var pid = GetProcessId(process.Handle);
+            Start(pid);
         }
 
         [DllImport("kernel32.dll", EntryPoint = "GetProcessId", CharSet = CharSet.Auto)]
         static extern int GetProcessId(IntPtr handle);
+        [DllImport("hook.dll", EntryPoint = "start", CharSet = CharSet.Auto)]
+        static extern IntPtr Start(int pid);
     }
 }
