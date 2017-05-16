@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8" lang="de">
+        <title>Commander</title>
+        <link href="images/kirk.ico" rel="icon" type="image/x-icon" />
+        <link rel="stylesheet" href="styles/index.css">
+        <link rel="stylesheet" href="styles/tableView.css">
+        <link rel="stylesheet" href="styles/waitingitem.css">
+        <link rel="stylesheet" href="styles/scrollbar.css">
+        <link rel="stylesheet" href="styles/dialog.css">
+        <script src="scripts/polyfills.js"></script>
+        <script src="scripts/connection.js"></script>
+        <script src="scripts/favorites.js"></script>
+        <script src="scripts/itemsmodel.js"></script>
+        <script src="scripts/itemssorter.js"></script>
+        <script src="scripts/filehelper.js"></script>
+        <script src="scripts/itemsviewmodel.js"></script>
+        <script src="scripts/columnscontrol.js"></script>
+        <script src="scripts/scrollbar.js"></script>
+        <script src="scripts/tableview.js"></script>
+        <script src="scripts/dialog.js"></script>
+        <script src="scripts/conflictview.js"></script>
+        <script src="scripts/waitingitem.js"></script>
+        <script src="scripts/commanderview.js"></script>
+        <script src="scripts/vgrid.js"></script>
+        <script src="scripts/grid.js"></script>
+        <script src="scripts/viewer.js"></script>
+        <script src="scripts/commander.js"></script>
+    </head>
+    <body>
+        <div id="vgrid">
+            <div id="grid">
+                <div id="leftView"></div>
+                <div id="grip"></div>
+                <div id="rightView"></div>
+            </div>
+            <div id="vgrip"></div>
+            <div id="viewer">
+                <img id="viewerImg" class="displayNone" />
+                <video id="viewerVideo" controls autoplay class="displayNone"></video>
+                <iframe id="viewerFrame" frameBorder="0" class="displayNone"></iframe>
+            </div>
+        </div>
+        <footer id="footer">Nichts selektiert</footer>
+        
+        <template id="itemTemplate">
+            <tr tabindex="0">
+                <td class="it-name"><div class="it-iconName"><img class="it-image" src='images/fault.png' alt="" onerror="this.src='images/fault.png'"><span class="it-nameValue"></span></div></td>
+                <td class="it-extension"></td>
+                <td class="it-size"></td>
+                <td class="it-time"></td>
+                <td class="it-version"></td>
+            </tr>
+        </template>
+        <template id="driveItemTemplate">
+            <tr tabindex="0">
+                <td class="it-name"><div class="it-iconName"><img class="it-image" src='images/fault.png' alt="" onerror="this.src='images/fault.png'"><span class="it-nameValue"></span></div></td>
+                <td class="it-description"></td>
+                <td class="it-size"></td>
+            </tr>
+        </template>
+        <template id="favoritesItemTemplate">
+            <tr tabindex="0">
+                <td class="it-name"><div class="it-iconName"><img class="it-image" src='images/fault.png' alt="" onerror="this.src='images/fault.png'"><span class="it-nameValue"></span></div></td>
+                <td class="it-description"></td>
+            </tr>
+        </template>
+        <template id="serviceItemTemplate">
+            <tr tabindex="0">
+                <td class="it-name"><div class="it-iconName"><img class="it-image" src='images/fault.png' alt="" onerror="this.src='images/fault.png'"><span class="it-nameValue"></span></div></td>
+                <td class="it-status"></td>
+                <td class="it-startType"></td>
+            </tr>
+        </template>
+        <template id="registryItemTemplate">
+            <tr tabindex="0">
+                <td class="it-name"><div class="it-iconName"><img class="it-image" src='images/fault.png' alt="" onerror="this.src='images/fault.png'"><span class="it-nameValue"></span></div></td>
+                <td class="it-value"></td>
+            </tr>
+        </template>
+        <template id="conflictItemTemplate">
+            <tr tabindex="0">
+                <td class="it-name"><div class="it-iconName"><img class="it-image" src='images/fault.png' alt="" onerror="this.src='images/fault.png'"><span class="it-nameValue"></span></div></td>
+                <td class="it-size">
+                    <span class="it-sourcesize"></span><br>
+                    <span class="it-targetsize"></span>
+                </td>
+                <td>
+                    <span class="it-sourceTime"></span><br>
+                    <span class="it-targetTime"></span>
+                </td>
+                <td>
+                    <span class="it-sourceVersion"></span><br>
+                    <span class="it-targetVersion"></span>
+                </td>
+            </tr>
+        </template>
+    </body>
+</html>

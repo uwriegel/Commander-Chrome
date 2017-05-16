@@ -1,0 +1,155 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.Serialization.Json;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using WebServer;
+
+namespace Commander
+{
+    class EventSession
+    {
+        public static void GetEvents(IWebSocketSender session)
+        {
+            EventSession.session = session;
+        }
+
+        public static void UpdateItems(string directory, string id, int requestNumber, Item[] items)
+        {
+            try
+            {
+                EventSession session;
+                if (!sessions.TryGetValue(id, out session))
+                {
+                    session = new EventSession();
+                    sessions[id] = session;
+                }
+                Interlocked.Exchange(ref session.requestNumber, requestNumber);
+                ThreadPool.QueueUserWorkItem(n => session.UpdateItem(directory, id, items, requestNumber));
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
+
+        public static void Refresh(string id)
+        {
+            try
+            {
+                EventSession.session.SendJson(new Event
+                {
+                    Id = id,
+                    Refresh = true
+                });
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
+
+        public static void UpdateServiceState(string id, Item[] serviceItem)
+        {
+            try
+            {
+                EventSession session;
+                if (!sessions.TryGetValue(id, out session))
+                {
+                    session = new EventSession();
+                    sessions[id] = session;
+                }
+                session.SendUpdateServiceState(id, serviceItem);
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
+
+        ItemUpdate GetItemUpdate(string directory, Item item, int index, int requestNumber)
+        {
+            try
+            {
+                if (Interlocked.CompareExchange(ref this.requestNumber, requestNumber, requestNumber) != requestNumber)
+                    return null;
+                string version = null;
+                var fullName = Path.Combine(directory, item.Name);
+                var updateTime = default(DateTime);
+                if (item.Extension.ToLower() == ".jpg")
+                {
+                    using (var er = new ExifReader(fullName))
+                    {
+                        DateTime exifTime;
+                        if (er.GetTagValue<DateTime>(ExifReader.ExifTags.DateTimeOriginal, out exifTime))
+                            updateTime = exifTime;
+                    }
+                }
+                else
+                    version = FileVersion.Get(fullName);
+
+                if (!string.IsNullOrEmpty(version) || updateTime != default(DateTime))
+                    return new ItemUpdate(index, version, updateTime);
+                return null;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        void UpdateItem(string directory, string id, Item[] items, int requestNumber)
+        {
+            try
+            {
+                var index = 0;
+                var result = (from n in items
+                              let i = index++
+                              where n.Kind == Kind.File
+                              let ui = GetItemUpdate(directory, n, i, requestNumber)
+                              where ui != null
+                              select ui).ToArray();
+
+                if (result.Length > 0)
+                {
+                    var dcjs = new DataContractJsonSerializer(typeof(ItemUpdate[]));
+                    var ms = new MemoryStream();
+                    dcjs.WriteObject(ms, result);
+                    ms.Capacity = (int)ms.Length;
+
+                    if (Interlocked.CompareExchange(ref this.requestNumber, requestNumber, requestNumber) == requestNumber)
+                    {
+                        session.SendJson(new Event
+                        {
+                            Id = id,
+                            ItemUpdates = result
+                        });
+                    }
+                }
+            }
+            catch 
+            {
+            }
+        }
+
+        void SendUpdateServiceState(string id, Item[] serviceItems)
+        {
+            session.SendJson(new Event
+            {
+                Id = id,
+                ServiceItems = serviceItems
+            });
+        }
+
+        EventSession()
+        {
+        }
+
+        static IWebSocketSender session;
+        static Dictionary<string, EventSession> sessions = new Dictionary<string, EventSession>();
+        int requestNumber;
+    }
+}
