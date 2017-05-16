@@ -20,7 +20,6 @@ BOOL __stdcall EnumWindowsProc(HWND hwnd, LPARAM lParam)
 		if (wpid == data->pid)
 		{
 			*data->found_window = hwnd;
-			MessageBoxA(0, "Toll", "", MB_OK);
 			return FALSE;
 		}
 	}
@@ -43,9 +42,9 @@ extern "C"
 		auto proc = reinterpret_cast<HOOKPROC>(GetProcAddress(module, "GetMsgProc"));
 
 		auto hook = SetWindowsHookEx(WH_GETMESSAGE, proc, module, 0);
-		PostMessage(commander_window, WM_APP + 200, 0, 0);
+		PostMessage(commander_window, WM_APP + 200, 0, pid);
 
-		MessageBoxA(0, "", "", MB_OK);
+		Sleep(2000);	
 
 		UnhookWindowsHookEx(hook);
 	}

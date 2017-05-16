@@ -140,6 +140,7 @@
     <Compile Include="PortScanner.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="ServiceStateProcessor.cs" />
+    <Compile Include="Starter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
