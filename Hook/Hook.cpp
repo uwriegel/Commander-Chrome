@@ -37,10 +37,10 @@ extern "C"
 			auto result = EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&data));
 			if (!result)
 				break;
-			Sleep(500);
+			Sleep(100);
 
 			if (i == 9 && result)
-				MessageBox(0, L"Nicht injiziert", L"", MB_OK);
+				return;
 		}
 
 		auto module = LoadLibrary(L"Hook.dll");
@@ -49,7 +49,7 @@ extern "C"
 		auto hook = SetWindowsHookEx(WH_GETMESSAGE, proc, module, 0);
 		PostMessage(commander_window, WM_APP + 200, 0, 0);
 
-		Sleep(2000);	
+		Sleep(500);	
 
 		UnhookWindowsHookEx(hook);
 	}
