@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #import "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.tlb" raw_interfaces_only rename("ReportEvent", "ReportEvent2")
 #include <metahost.h>
-#include "Drop_target.h"
 using namespace mscorlib;
 using namespace std;
 #pragma comment(lib, "mscoree.lib")
@@ -11,13 +10,7 @@ void start(HWND hwnd)
 	auto module = LoadLibrary(L"hook");
 	array<wchar_t, 1000> buffer;
 	GetModuleFileName(module, buffer.data(), static_cast<int>(buffer.size()));
-
-	
-	
-	
-	
-	// TODO:!!!
-	//FreeLibrary(module);
+	FreeLibrary(module);
 	
 	wstring path(buffer.data(), buffer.size());
 
@@ -81,7 +74,19 @@ void start(HWND hwnd)
 	VariantClear(&args);
 	SysFreeString(static_method_name);
 	type->Release();
+	SafeArrayDestroy(static_method_args);
 	
+	static_method_args = SafeArrayCreateVector(VT_VARIANT, 0, 2);
+	index = 0;
+	args.vt = VT_BSTR;
+	args.bstrVal = SysAllocString(path.c_str());
+	hr = SafeArrayPutElement(static_method_args, &index, &args);
+	VARIANT arg2;
+	arg2.vt = VT_I8;
+	arg2.llVal = reinterpret_cast<long long>(hwnd); 
+	index = 1;
+	hr = SafeArrayPutElement(static_method_args, &index, &arg2);
+
 	_Assembly* commander_Assembly = static_cast<_Assembly*>(return_value.pdispVal);
 	VariantClear(&return_value);
 	class_name = SysAllocString(L"Commander.Starter");
@@ -95,10 +100,10 @@ void start(HWND hwnd)
 	SysFreeString(static_method_name);
 	SafeArrayDestroy(static_method_args);
 
-	hr = RevokeDragDrop(hwnd);
+	//hr = RevokeDragDrop(hwnd);
 
-	auto drop_target = new Drop_target();
-	hr = RegisterDragDrop(hwnd, drop_target);
-	drop_target->Release();
+	//auto drop_target = new Drop_target();
+	//hr = RegisterDragDrop(hwnd, drop_target);
+	//drop_target->Release();
 
 }

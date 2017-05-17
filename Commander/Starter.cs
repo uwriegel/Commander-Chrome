@@ -13,8 +13,11 @@ namespace Commander
 {
     public static class Starter
     {
-        public static void Start(string path)
+        public static IntPtr Hwnd { get; private set; }
+
+        public static void Start(string path, long hwnd)
         {
+            Hwnd = new IntPtr(hwnd);
             //var port = PortScanner.PortFound();
             var port = 20000;
 
