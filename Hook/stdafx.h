@@ -11,6 +11,7 @@
 // Windows Header Files:
 #include <windows.h>
 
+#include <OleIdl.h>
 #include <array>
 #include <string>
 #include <sstream>

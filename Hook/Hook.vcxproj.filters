@@ -24,6 +24,9 @@
     <ClInclude Include="managed_bridge.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Drop_target.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -39,6 +42,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="managed_bridge.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Drop_target.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

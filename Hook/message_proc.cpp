@@ -15,7 +15,7 @@ LRESULT __stdcall GetMsgProc(int code, WPARAM wParam, LPARAM lParam)
 			if (first)
 			{ 
 				first = false;
-				start();
+				start(msg->hwnd);
 			}
 		}
 	}

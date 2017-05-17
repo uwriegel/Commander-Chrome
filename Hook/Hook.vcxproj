@@ -141,6 +141,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Drop_target.h" />
     <ClInclude Include="managed_bridge.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -160,6 +161,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Drop_target.cpp" />
     <ClCompile Include="Hook.cpp" />
     <ClCompile Include="managed_bridge.cpp" />
     <ClCompile Include="message_proc.cpp" />

@@ -1,23 +1,31 @@
 #include "stdafx.h"
 #import "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.tlb" raw_interfaces_only rename("ReportEvent", "ReportEvent2")
 #include <metahost.h>
+#include "Drop_target.h"
 using namespace mscorlib;
 using namespace std;
 #pragma comment(lib, "mscoree.lib")
 
-void start()
+void start(HWND hwnd)
 {
 	auto module = LoadLibrary(L"hook");
 	array<wchar_t, 1000> buffer;
 	GetModuleFileName(module, buffer.data(), static_cast<int>(buffer.size()));
-	FreeLibrary(module);
+	
+	
+	
+	
+	
+	// TODO:!!!
+	//FreeLibrary(module);
+	
 	wstring path(buffer.data(), buffer.size());
 
 	auto pos = path.find_last_of(L"\\");
 	path = path.substr(0, pos + 1) + L"Commander.exe";
 
 	ICLRMetaHost *meta_host{ nullptr };
-	HRESULT hr = CLRCreateInstance(CLSID_CLRMetaHost, IID_ICLRMetaHost, reinterpret_cast<void**>(&meta_host));
+	auto hr = CLRCreateInstance(CLSID_CLRMetaHost, IID_ICLRMetaHost, reinterpret_cast<void**>(&meta_host));
 
 	// Get the ICLRRuntimeInfo corresponding to a particular CLR version. It 
 	// supersedes CorBindToRuntimeEx with STARTUP_LOADER_SAFEMODE.
@@ -86,4 +94,15 @@ void start()
 	VariantClear(&args);
 	SysFreeString(static_method_name);
 	SafeArrayDestroy(static_method_args);
+
+	stringstream sstr;
+	sstr << "Fenster2: " << hwnd;
+	MessageBoxA(0, sstr.str().c_str(), "", MB_OK);
+
+	hr = RevokeDragDrop(hwnd);
+
+	auto drop_target = new Drop_target();
+	hr = RegisterDragDrop(hwnd, drop_target);
+	drop_target->Release();
+
 }
