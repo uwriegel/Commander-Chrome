@@ -9,6 +9,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Commander", "Commander\Comm
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Hook", "Hook\Hook.vcxproj", "{1FDA7722-55BA-4421-A8D6-309067C1EA14}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BDA1A616-93D9-41BD-A08C-F58F765CEF2C}"
+	ProjectSection(SolutionItems) = preProject
+		WebServer.dll = WebServer.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
