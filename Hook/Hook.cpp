@@ -3,7 +3,6 @@ using namespace std;
 
 struct Data
 {
-	DWORD pid;
 	HWND* found_window;
 };
 
@@ -17,32 +16,38 @@ BOOL __stdcall EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	{
 		DWORD wpid{ 0 };
 		GetWindowThreadProcessId(hwnd, &wpid);
-		if (wpid == data->pid)
-		{
-			*data->found_window = hwnd;
-			return FALSE;
-		}
+		*data->found_window = hwnd;
+		return FALSE;
 	}
 	return TRUE;
 }
 
 extern "C" 
 {
-	void __stdcall start(DWORD pid)
+	void __stdcall start()
 	{
 		HWND commander_window{ 0 };
-		Sleep(500);
+		
 		Data data
 		{
-			pid, &commander_window
+			&commander_window
 		};
-		auto result = EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&data));
+		for (auto i = 0; i < 10; i++)
+		{
+			auto result = EnumWindows(EnumWindowsProc, reinterpret_cast<LPARAM>(&data));
+			if (!result)
+				break;
+			Sleep(500);
+
+			if (i == 9 && result)
+				MessageBox(0, L"Nicht injiziert", L"", MB_OK);
+		}
 
 		auto module = LoadLibrary(L"Hook.dll");
 		auto proc = reinterpret_cast<HOOKPROC>(GetProcAddress(module, "GetMsgProc"));
 
 		auto hook = SetWindowsHookEx(WH_GETMESSAGE, proc, module, 0);
-		PostMessage(commander_window, WM_APP + 200, 0, pid);
+		PostMessage(commander_window, WM_APP + 200, 0, 0);
 
 		Sleep(2000);	
 

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#import "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.tlb" raw_interfaces_only 
+#import "C:\\Windows\\Microsoft.NET\\Framework64\\v4.0.30319\\mscorlib.tlb" raw_interfaces_only rename("ReportEvent", "ReportEvent2")
 #include <metahost.h>
 using namespace mscorlib;
 using namespace std;
@@ -35,7 +35,6 @@ void start()
 	hr = runtime_info->GetInterface(CLSID_CorRuntimeHost, IID_ICorRuntimeHost, reinterpret_cast<void**>(&cor_runtime_host));
 	runtime_info->Release();
 
-	// Start the CLR.
 	hr = cor_runtime_host->Start();
 
 	IUnknown* app_domain_thunk{ nullptr };
@@ -73,7 +72,6 @@ void start()
 		nullptr, vtEmpty, static_method_args, &return_value);
 	VariantClear(&args);
 	SysFreeString(static_method_name);
-	SafeArrayDestroy(static_method_args);
 	type->Release();
 	
 	_Assembly* commander_Assembly = static_cast<_Assembly*>(return_value.pdispVal);
@@ -82,12 +80,6 @@ void start()
 	hr = commander_Assembly->GetType_2(class_name, &type);
 	commander_Assembly->Release();
 	SysFreeString(class_name);
-
-	static_method_args = SafeArrayCreateVector(VT_VARIANT, 0, 1);
-	args.vt = VT_BSTR;
-	args.bstrVal = SysAllocString(L"Das kommt aus dem schönen Zeh");
-	hr = SafeArrayPutElement(static_method_args, &index, &args);
-
 	static_method_name = SysAllocString(L"Start");
 	hr = type->InvokeMember_3(static_method_name, static_cast<BindingFlags>(BindingFlags_InvokeMethod | BindingFlags_Static | BindingFlags_Public),
 		nullptr, vtEmpty, static_method_args, nullptr);

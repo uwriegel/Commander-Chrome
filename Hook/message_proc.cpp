@@ -12,13 +12,10 @@ LRESULT __stdcall GetMsgProc(int code, WPARAM wParam, LPARAM lParam)
 		if (first && msg->message == WM_APP + 200)
 		{
 			auto pid = GetCurrentProcessId();
-			if (pid == msg->lParam)
-			{
-				if (first)
-				{ 
-					first = false;
-					start();
-				}
+			if (first)
+			{ 
+				first = false;
+				start();
 			}
 		}
 	}

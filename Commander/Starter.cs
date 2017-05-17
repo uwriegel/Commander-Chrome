@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
@@ -12,16 +13,18 @@ namespace Commander
 {
     public static class Starter
     {
-        public static void Start(string text)
+        public static void Start(string path)
         {
             //var port = PortScanner.PortFound();
             var port = 20000;
 
+            var pos = path.LastIndexOf("\\");
+            path = path.Substring(0, pos);
+            var webRoot = Path.Combine(path, @"..\..\..\WebApp");
+
             var configuration = new Configuration
             {
-                //Webroot = Environment.CommandLine.Contains("-webroot") ? @"..\..\..\WebApp" : @".",
-                //Webroot = @"..\..\..\..\webroot\Studie",
-                Webroot = @"C:\Users\urieg\Documents\Projects\Git\Commander\WebApp",
+                Webroot = webRoot,
                 Port = port
             };
             configuration.Extensions.Add(ExtensionFactory.Current.Create("Commander", new[] { "/Commander" }, true));
