@@ -11,7 +11,7 @@ void start(HWND hwnd)
 	auto module = LoadLibrary(L"hook");
 	array<wchar_t, 1000> buffer;
 	GetModuleFileName(module, buffer.data(), static_cast<int>(buffer.size()));
-	
+
 	
 	
 	
@@ -94,10 +94,6 @@ void start(HWND hwnd)
 	VariantClear(&args);
 	SysFreeString(static_method_name);
 	SafeArrayDestroy(static_method_args);
-
-	stringstream sstr;
-	sstr << "Fenster2: " << hwnd;
-	MessageBoxA(0, sstr.str().c_str(), "", MB_OK);
 
 	hr = RevokeDragDrop(hwnd);
 

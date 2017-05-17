@@ -12,10 +12,9 @@ BOOL __stdcall EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	array<wchar_t, 40> buffer;
 	GetWindowText(hwnd, buffer.data(), static_cast<int>(buffer.size()));
 	wstring text(buffer.data());
+
 	if (text.length() > 0 && text.compare(L"Unbenannt") == 0)
 	{
-		DWORD wpid{ 0 };
-		GetWindowThreadProcessId(hwnd, &wpid);
 		*data->found_window = hwnd;
 		return FALSE;
 	}
