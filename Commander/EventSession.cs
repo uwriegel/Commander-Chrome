@@ -21,8 +21,7 @@ namespace Commander
         {
             try
             {
-                EventSession session;
-                if (!sessions.TryGetValue(id, out session))
+                if (!sessions.TryGetValue(id, out var session))
                 {
                     session = new EventSession();
                     sessions[id] = session;
@@ -52,12 +51,30 @@ namespace Commander
             }
         }
 
+        public static void DragOver(int x, int y)
+        {
+            try
+            {
+                EventSession.session.SendJson(new Event
+                {
+                    DragOver = new DragOver
+                    {
+                        X = x,
+                        Y = y
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
+
         public static void UpdateServiceState(string id, Item[] serviceItem)
         {
             try
             {
-                EventSession session;
-                if (!sessions.TryGetValue(id, out session))
+                if (!sessions.TryGetValue(id, out var session))
                 {
                     session = new EventSession();
                     sessions[id] = session;

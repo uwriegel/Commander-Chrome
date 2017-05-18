@@ -67,7 +67,7 @@ class ColumnsControl {
                     this.beginColumnDragging(evt.pageX, column);
             };
         });
-        this.tableView.onmousemove = evt => {
+        this.tableView.addEventListener('mousemove', evt => {
             var th = evt.target;
             if (th.localName == "th" && (th.offsetLeft > 0 || evt.pageX - th.getBoundingClientRect().left > 10)
                 && (th.offsetLeft + th.offsetWidth < tableView.offsetWidth || evt.pageX - th.getBoundingClientRect().left < 4)
@@ -80,7 +80,7 @@ class ColumnsControl {
                 document.body.style.cursor = 'default';
                 grippingReady = false;
             }
-        };
+        });
     }
     initializeEachColumn(eachColumnAction) {
         this.columns.forEach(eachColumnAction);

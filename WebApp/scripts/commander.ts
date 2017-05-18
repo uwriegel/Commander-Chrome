@@ -118,6 +118,11 @@ var Commander = (function ()
         }        
     }
 
+    function dragOver(x: number, y: number)
+    {
+        console.log(`Drag: ${x}, ${y}`);
+    }
+
     async function toggleHidden()
     {
         await Connection.toggleHidden()
@@ -126,7 +131,8 @@ var Commander = (function ()
     }
 
     return {
-        getCommanderView: getCommanderView
+        getCommanderView: getCommanderView,
+        dragOver: dragOver
     }
 })()
 

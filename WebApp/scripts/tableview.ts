@@ -64,6 +64,11 @@ class TableView implements IObservator
             e.preventDefault() // prevent the default action (scroll / move caret)
         }
 
+        this.tableView.addEventListener('mousemove', e =>
+        {
+            console.log(`Maus: ${e.clientX}, ${e.clientY}`);
+        });
+
         this.recentHeight = this.tableView.clientHeight
 
         window.requestAnimationFrame(() => this.resizeChecking())

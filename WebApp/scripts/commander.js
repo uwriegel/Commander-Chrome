@@ -96,13 +96,17 @@ var Commander = (function () {
                 return rightView;
         }
     }
+    function dragOver(x, y) {
+        console.log(`Drag: ${x}, ${y}`);
+    }
     async function toggleHidden() {
         await Connection.toggleHidden();
         leftView.refresh();
         rightView.refresh();
     }
     return {
-        getCommanderView: getCommanderView
+        getCommanderView: getCommanderView,
+        dragOver: dragOver
     };
 })();
 //# sourceMappingURL=commander.js.map

@@ -63,12 +63,19 @@ declare class ServiceItemUpdate
     imageUrl: string
 }
 
+declare class DragOver
+{
+    x: number
+    y: number
+}
+
 declare class CommanderEvent 
 {
     id: string 
     refresh?: boolean
     serviceItems: ServiceItemUpdate[]
     itemUpdates: ItemUpdate[]
+    dragOver: DragOver
 }
 
 declare class ConflictItem

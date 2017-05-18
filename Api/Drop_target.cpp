@@ -4,18 +4,20 @@ using namespace std;
 
 extern "C"
 {
-	void initialize_drag_and_drop(HWND hwnd)
+	void initialize_drag_and_drop(HWND hwnd, drag_and_drop_callback_method* drag_and_drop_callback)
 	{
 		auto hr = RevokeDragDrop(hwnd);
-		auto drop_target = new Drop_target();
+		auto drop_target = new Drop_target(hwnd, drag_and_drop_callback);
 		hr = RegisterDragDrop(hwnd, drop_target);
 		drop_target->Release();
 	}
 }
 
-Drop_target::Drop_target()
+Drop_target::Drop_target(HWND hwnd, drag_and_drop_callback_method* drag_and_drop_callback)
 	: refcount(1)
 	, active(false)
+	, hwnd(hwnd)
+	, drag_and_drop_callback(drag_and_drop_callback)
 {
 }
 
@@ -50,8 +52,12 @@ HRESULT __stdcall Drop_target::DragEnter(IDataObject *data_object, DWORD key_sta
 			}
 			GlobalUnlock(mem);
 			ReleaseStgMedium(&stg_medium);
-			*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
-				key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+
+			POINT p{ pt.x, pt.y };
+			ScreenToClient(hwnd, &p);
+			if (drag_and_drop_callback(p.x, p.y))
+				*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
+					key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
 		}
 	}
 
@@ -60,7 +66,9 @@ HRESULT __stdcall Drop_target::DragEnter(IDataObject *data_object, DWORD key_sta
 
 HRESULT __stdcall Drop_target::DragOver(DWORD key_state, POINTL pt, DWORD *pdwEffect)
 {
-	if (active)
+	POINT p{ pt.x, pt.y };
+	ScreenToClient(hwnd, &p);
+	if (active && drag_and_drop_callback(p.x, p.y))
 		*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
 			key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
 	return S_OK;

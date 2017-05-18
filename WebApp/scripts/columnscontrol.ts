@@ -83,7 +83,7 @@ class ColumnsControl
             }
         })
 
-        this.tableView.onmousemove = evt =>
+        this.tableView.addEventListener('mousemove', evt =>
         {
             var th = <HTMLElement>evt.target
             if (th.localName == "th" && (th.offsetLeft > 0 || evt.pageX - th.getBoundingClientRect().left > 10)
@@ -99,7 +99,7 @@ class ColumnsControl
                 document.body.style.cursor = 'default'
                 grippingReady = false
             }
-        }
+        });
     }
 
     initializeEachColumn(eachColumnAction)

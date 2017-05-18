@@ -19,5 +19,8 @@ class Event
 
     [DataMember(Name = "refresh")]
     public bool Refresh{ get; set; }
+
+    [DataMember(EmitDefaultValue = false, Name = "dragOver")]
+    public DragOver DragOver { get; set; }
 }
 

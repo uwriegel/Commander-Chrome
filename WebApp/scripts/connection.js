@@ -16,6 +16,8 @@ var Connection = (function () {
             serviceItemsCallbacks[evt.id](evt.serviceItems);
         if (evt.refresh)
             Commander.getCommanderView(evt.id).refresh();
+        if (evt.dragOver)
+            Commander.dragOver(evt.dragOver.x, evt.dragOver.y);
     };
     /**
      * Hinzufügen eines Eventhandlers für Dateiinfoupdates
