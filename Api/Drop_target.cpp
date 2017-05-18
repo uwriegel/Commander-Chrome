@@ -1,6 +1,17 @@
 #include "stdafx.h"
 #include "drop_target.h"
 
+extern "C"
+{
+	void initialize_drag_and_drop(HWND hwnd)
+	{
+		auto hr = RevokeDragDrop(hwnd);
+		auto drop_target = new Drop_target();
+		hr = RegisterDragDrop(hwnd, drop_target);
+		drop_target->Release();
+	}
+}
+
 Drop_target::Drop_target()
 	: refcount(1)
 {

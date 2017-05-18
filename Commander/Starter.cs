@@ -43,6 +43,8 @@ namespace Commander
                 else
                     throw;
             }
+
+            DragAndDrop.Current.Initialize(Hwnd);
         }
     }
 }

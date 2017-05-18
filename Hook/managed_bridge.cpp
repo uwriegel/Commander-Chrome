@@ -99,11 +99,4 @@ void start(HWND hwnd)
 	VariantClear(&args);
 	SysFreeString(static_method_name);
 	SafeArrayDestroy(static_method_args);
-
-	//hr = RevokeDragDrop(hwnd);
-
-	//auto drop_target = new Drop_target();
-	//hr = RegisterDragDrop(hwnd, drop_target);
-	//drop_target->Release();
-
 }
