@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "drop_target.h"
+using namespace std;
 
 extern "C"
 {
@@ -14,23 +15,60 @@ extern "C"
 
 Drop_target::Drop_target()
 	: refcount(1)
+	, active(false)
 {
 }
 
-HRESULT __stdcall Drop_target::DragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
+HRESULT __stdcall Drop_target::DragEnter(IDataObject *data_object, DWORD key_state, POINTL pt, DWORD *pdwEffect)
 {
-	*pdwEffect = DROPEFFECT_LINK;
+	FORMATETC formatetc
+	{ 
+		CF_HDROP, 
+		0, 
+		DVASPECT_CONTENT, 
+		-1, 
+		TYMED_HGLOBAL 
+	};
+
+	if (data_object->QueryGetData(&formatetc) == 0)
+	{
+		STGMEDIUM stg_medium{ 0 };
+		stg_medium.tymed = { TYMED_HGLOBAL };
+		auto hr = data_object->GetData(&formatetc, &stg_medium);
+		if (hr == 0)
+		{
+			auto mem = stg_medium.hGlobal;
+			auto drop = reinterpret_cast<HDROP>(GlobalLock(mem));
+			auto num_of_files = DragQueryFile(drop, -1, nullptr, 0);
+			active = true;
+			array<wchar_t, MAX_PATH> buffer;
+			for (unsigned int i = 0; i < num_of_files; i++)
+			{
+				auto length = DragQueryFile(drop, i, buffer.data(), static_cast<unsigned int>(buffer.size()));
+				wstring str(buffer.data(), length);
+				auto w = str;
+			}
+			GlobalUnlock(mem);
+			ReleaseStgMedium(&stg_medium);
+			*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
+				key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+		}
+	}
+
 	return S_OK;
 }
 
-HRESULT __stdcall Drop_target::DragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect)
+HRESULT __stdcall Drop_target::DragOver(DWORD key_state, POINTL pt, DWORD *pdwEffect)
 {
-	*pdwEffect = DROPEFFECT_LINK;
+	if (active)
+		*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
+			key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
 	return S_OK;
 }
 
 HRESULT __stdcall Drop_target::DragLeave()
 {
+	active = false;
 	return S_OK;
 }
 

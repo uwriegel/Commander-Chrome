@@ -12,6 +12,7 @@
 #include <windows.h>
 
 #include <OleIdl.h>
+#include <Shellapi.h>
 #include <array>
 #include <string>
 #include <sstream>

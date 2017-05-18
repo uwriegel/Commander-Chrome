@@ -51,6 +51,9 @@
   <PropertyGroup>
     <ApplicationIcon>Kirk.ico</ApplicationIcon>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Commander.Starter</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -64,21 +67,11 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
     <Reference Include="WebServer">
       <HintPath>..\WebServer.dll</HintPath>
     </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <Compile Include="AdminRights.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="ClassExtensions\FileAttributes.cs" />
@@ -124,10 +117,6 @@
     <Compile Include="Operations\MoveOperation.cs" />
     <Compile Include="Operations\Operation.cs" />
     <Compile Include="Operations\OperationProcessor.cs" />
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="PortScanner.cs" />
     <Compile Include="Registry.cs" />
     <Compile Include="ServiceStateProcessor.cs" />

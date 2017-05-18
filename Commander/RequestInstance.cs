@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
-using System.Windows;
-using System.Windows.Controls;
 using WebServer;
 
 namespace Commander
@@ -106,8 +102,6 @@ namespace Commander
 
         public void Closed(IWebSocketSender sender)
         {
-            var app = Application.Current;
-            app.Dispatcher.Invoke(() => app.Shutdown());
         }
 
         #endregion 

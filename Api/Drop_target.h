@@ -16,5 +16,6 @@ public:
 	ULONG __stdcall Release();
 private:
 
+	bool active;
 	DWORD refcount;
 };
