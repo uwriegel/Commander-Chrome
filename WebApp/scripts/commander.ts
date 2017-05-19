@@ -120,7 +120,10 @@ var Commander = (function ()
 
     function dragOver(x: number, y: number)
     {
-        console.log(`Drag: ${x}, ${y}`);
+        if (leftView.isMouseInTableView(x, y))
+            console.log(`Drag: ${x}, ${y}`);
+        if (rightView.isMouseInTableView(x, y))
+            console.log(`Drag: ${x}, ${y}`);
     }
 
     async function toggleHidden()

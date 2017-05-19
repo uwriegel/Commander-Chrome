@@ -213,6 +213,18 @@ class TableView {
         else
             item.classList.remove("selected");
     }
+    isMouseWithin(x, y) {
+        var rect = this.tableView.getBoundingClientRect();
+        rect.left, rect.top, rect.width, rect.bottom;
+        //console.log(`${x} ${y} ${rectObject.left} ${rectObject.top} ${rectObject.width} ${rectObject.bottom}`)
+        var result = (x > rect.left && x < (rect.left + rect.width)
+            && y > rect.top && y < (rect.top + rect.bottom));
+        if (result)
+            this.tableView.classList.add("highlight");
+        else
+            this.tableView.classList.remove("highlight");
+        return result;
+    }
     initializeRowHeight() {
         var node = this.itemsViewModel.insertMeasureItem();
         this.tbody.appendChild(node);

@@ -160,7 +160,13 @@ footer {
     opacity: 0;
 }
 
-.commanderTable th {
+.tableView
+{
+    transition: background-color 0.5s;
+}
+
+.commanderTable th 
+{
     padding-left:5px;
     text-align: left;
     font-weight: normal;
@@ -176,7 +182,8 @@ footer {
     background-color: #0063ff;
 }
 
-.commanderTable td {
+.commanderTable td
+{
     overflow: hidden;
     height: 16px;
     text-overflow: ellipsis;

@@ -332,6 +332,9 @@ class CommanderView {
     changeSavedView(index) {
         this.processItem(index, false, false, true);
     }
+    isMouseInTableView(x, y) {
+        return this.tableView.isMouseWithin(x, y);
+    }
     processItem(itemIndex, openWith, showProperties, fromOtherView) {
         var dir;
         this.lastCurrentDir = null;

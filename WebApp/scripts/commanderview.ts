@@ -393,6 +393,11 @@ class CommanderView
         this.processItem(index, false, false, true)
     }
 
+    isMouseInTableView(x: number, y: number): boolean
+    {
+        return this.tableView.isMouseWithin(x, y)
+    }
+
     private processItem(itemIndex: number, openWith: boolean, showProperties: boolean, fromOtherView?: boolean)
     {
         var dir: string
