@@ -70,6 +70,22 @@ namespace Commander
             }
         }
 
+        public static void DragLeave()
+        {
+            try
+            {
+                EventSession.session.SendJson(new Event
+                {
+                    DragLeave = true
+                });
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
+        
+
         public static void UpdateServiceState(string id, Item[] serviceItem)
         {
             try

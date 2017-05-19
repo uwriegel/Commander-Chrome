@@ -1,12 +1,13 @@
 /*
 * Listview mit mehreren Spalten
 */
-class TableView {
+var TableView = (function () {
     /**
      *
      * @param parent Das Elternelement, das die Tableview beinhaltet
      */
-    constructor(parent) {
+    function TableView(parent) {
+        var _this = this;
         this.itemsCount = 0;
         /**
         * Index des aktuellen Eintrags in der Liste der Einträge (items)
@@ -27,71 +28,71 @@ class TableView {
         this.table = document.createElement("table");
         this.table.classList.add('tableViewTable');
         this.tableView.appendChild(this.table);
-        this.tableView.addEventListener("focusin", e => {
-            if (this.onFocus)
-                this.onFocus();
-            this.focus();
+        this.tableView.addEventListener("focusin", function (e) {
+            if (_this.onFocus)
+                _this.onFocus();
+            _this.focus();
         });
-        this.tableView.onkeydown = e => {
+        this.tableView.onkeydown = function (e) {
             switch (e.which) {
                 case 13:
-                    if (this.onSelectedCallback)
-                        this.onSelectedCallback(this.currentItemIndex, e.ctrlKey, e.altKey);
+                    if (_this.onSelectedCallback)
+                        _this.onSelectedCallback(_this.currentItemIndex, e.ctrlKey, e.altKey);
                     break;
                 case 33:
-                    this.pageUp();
+                    _this.pageUp();
                     break;
                 case 34:
-                    this.pageDown();
+                    _this.pageDown();
                     break;
                 case 35:
                     if (!e.shiftKey)
-                        this.end();
+                        _this.end();
                     break;
                 case 36:
                     if (!e.shiftKey)
-                        this.pos1();
+                        _this.pos1();
                     break;
                 case 38:
-                    this.upOne();
+                    _this.upOne();
                     break;
                 case 40:
-                    this.downOne();
+                    _this.downOne();
                     break;
                 default:
                     return; // exit this handler for other keys
             }
             e.preventDefault(); // prevent the default action (scroll / move caret)
         };
-        this.tableView.addEventListener('mousemove', e => {
-            console.log(`Maus: ${e.clientX}, ${e.clientY}`);
+        this.tableView.addEventListener('mousemove', function (e) {
+            console.log("Maus: " + e.clientX + ", " + e.clientY);
         });
         this.recentHeight = this.tableView.clientHeight;
-        window.requestAnimationFrame(() => this.resizeChecking());
+        window.requestAnimationFrame(function () { return _this.resizeChecking(); });
         this.thead = document.createElement("thead");
         this.table.appendChild(this.thead);
         this.tbody = document.createElement("tbody");
         this.table.appendChild(this.tbody);
-        this.tbody.addEventListener('mousewheel', evt => {
+        this.tbody.addEventListener('mousewheel', function (evt) {
             var wheelEvent = evt;
             var delta = wheelEvent.wheelDelta / Math.abs(wheelEvent.wheelDelta) * 3;
-            this.scroll(this.startPosition - delta);
+            _this.scroll(_this.startPosition - delta);
         });
-        this.tbody.ondblclick = () => {
-            if (this.onSelectedCallback)
-                this.onSelectedCallback(this.currentItemIndex, false, false);
+        this.tbody.ondblclick = function () {
+            if (_this.onSelectedCallback)
+                _this.onSelectedCallback(_this.currentItemIndex, false, false);
         };
         {
-            let tr = document.createElement("tr");
+            var tr = document.createElement("tr");
             this.thead.appendChild(tr);
         }
         this.scrollbar.initialize(this);
-        this.tableView.onclick = evt => {
+        this.tableView.onclick = function (evt) {
             focus();
         };
-        this.tbody.onclick = evt => {
+        this.tbody.onclick = function (evt) {
             var tr = evt.target.closest("tr");
-            var trs = this.tbody.querySelectorAll("tr");
+            var trs = _this.tbody.querySelectorAll("tr");
             var index;
             for (var i = 0; i < trs.length; i++) {
                 if (trs[i] == tr) {
@@ -99,53 +100,57 @@ class TableView {
                     break;
                 }
             }
-            this.currentItemIndex = index + this.startPosition;
-            if (this.onCurrentItemChanged)
-                this.onCurrentItemChanged(this.currentItemIndex);
+            _this.currentItemIndex = index + _this.startPosition;
+            if (_this.onCurrentItemChanged)
+                _this.onCurrentItemChanged(_this.currentItemIndex);
             tr.focus();
         };
     }
-    set Columns(value) {
-        this.columnsControl = value;
-        var theadrow = this.thead.querySelector('tr');
-        theadrow.innerHTML = "";
-        this.columnsControl.initializeEachColumn(item => {
-            var th = document.createElement("th");
-            th.innerHTML = item.item;
-            if (item.class)
-                th.classList.add(item.class);
-            theadrow.appendChild(th);
-        });
-        this.itemsViewModel.setColumns(value);
-        this.columnsControl.initialize(this.tableView);
-    }
-    get Columns() {
-        return this.columnsControl;
-    }
-    setObservable(observable) {
+    Object.defineProperty(TableView.prototype, "Columns", {
+        get: function () {
+            return this.columnsControl;
+        },
+        set: function (value) {
+            this.columnsControl = value;
+            var theadrow = this.thead.querySelector('tr');
+            theadrow.innerHTML = "";
+            this.columnsControl.initializeEachColumn(function (item) {
+                var th = document.createElement("th");
+                th.innerHTML = item.item;
+                if (item.class)
+                    th.classList.add(item.class);
+                theadrow.appendChild(th);
+            });
+            this.itemsViewModel.setColumns(value);
+            this.columnsControl.initialize(this.tableView);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    TableView.prototype.setObservable = function (observable) {
         this.observableItems = observable;
         this.observableItems.registerObservation(this);
-    }
-    setItemsViewModel(itemsViewModel) {
+    };
+    TableView.prototype.setItemsViewModel = function (itemsViewModel) {
         this.itemsViewModel = itemsViewModel;
-    }
-    setOnSelectedCallback(callback) {
+    };
+    TableView.prototype.setOnSelectedCallback = function (callback) {
         this.onSelectedCallback = callback;
-    }
-    setOnCurrentItemChanged(callback) {
+    };
+    TableView.prototype.setOnCurrentItemChanged = function (callback) {
         this.onCurrentItemChanged = callback;
-    }
-    setOnFocus(callback) {
+    };
+    TableView.prototype.setOnFocus = function (callback) {
         this.onFocus = callback;
-    }
-    getCurrentItemIndex() {
+    };
+    TableView.prototype.getCurrentItemIndex = function () {
         return this.currentItemIndex;
-    }
+    };
     /**
      * Setzen des Focuses
      * @returns true, wenn der Fokus gesetzt werden konnte
      */
-    focus() {
+    TableView.prototype.focus = function () {
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
         var index = this.currentItemIndex - this.startPosition;
@@ -158,16 +163,16 @@ class TableView {
         }
         this.tableView.focus();
         return false;
-    }
-    pos1() {
+    };
+    TableView.prototype.pos1 = function () {
         this.clearItems();
         this.displayItems(0);
         this.currentItemIndex = 0;
         this.tbody.querySelectorAll('tr')[0].focus();
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
-    }
-    downOne() {
+    };
+    TableView.prototype.downOne = function () {
         if (this.currentItemIndex == this.itemsCount - 1)
             return false;
         this.scrollIntoView();
@@ -185,12 +190,12 @@ class TableView {
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
         return true;
-    }
-    ItemsCleared() {
+    };
+    TableView.prototype.ItemsCleared = function () {
         this.currentItemIndex = 0;
         this.clearItems();
-    }
-    itemsChanged(lastCurrentIndex) {
+    };
+    TableView.prototype.itemsChanged = function (lastCurrentIndex) {
         this.ItemsCleared();
         this.currentItemIndex = lastCurrentIndex;
         this.displayItems(0);
@@ -199,21 +204,21 @@ class TableView {
         this.scrollIntoView();
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
-    }
-    updateItems() {
+    };
+    TableView.prototype.updateItems = function () {
         var trs = this.tbody.querySelectorAll('tr');
         for (var i = 0; i < trs.length; i++) {
             this.itemsViewModel.updateItem(trs[i], i + this.startPosition);
         }
-    }
-    refreshSelection(itemIndex, isSelected) {
+    };
+    TableView.prototype.refreshSelection = function (itemIndex, isSelected) {
         var item = this.tbody.querySelectorAll('tr')[itemIndex - this.startPosition];
         if (isSelected)
             item.classList.add("selected");
         else
             item.classList.remove("selected");
-    }
-    isMouseWithin(x, y) {
+    };
+    TableView.prototype.isMouseWithin = function (x, y) {
         var rect = this.tableView.getBoundingClientRect();
         rect.left, rect.top, rect.width, rect.bottom;
         //console.log(`${x} ${y} ${rectObject.left} ${rectObject.top} ${rectObject.width} ${rectObject.bottom}`)
@@ -224,15 +229,18 @@ class TableView {
         else
             this.tableView.classList.remove("highlight");
         return result;
-    }
-    initializeRowHeight() {
+    };
+    TableView.prototype.dragLeave = function () {
+        this.tableView.classList.remove("highlight");
+    };
+    TableView.prototype.initializeRowHeight = function () {
         var node = this.itemsViewModel.insertMeasureItem();
         this.tbody.appendChild(node);
         var td = this.tbody.querySelector('td');
         this.rowHeight = td.clientHeight;
         this.clearItems();
-    }
-    calculateTableHeight() {
+    };
+    TableView.prototype.calculateTableHeight = function () {
         if (this.rowHeight) {
             this.scrollbar.setOffsetTop(this.thead.offsetHeight);
             this.tableCapacity = Math.floor((this.tableView.offsetHeight - this.thead.offsetHeight) / this.rowHeight);
@@ -242,14 +250,14 @@ class TableView {
         else
             this.tableCapacity = -1;
         this.scrollbar.itemsChanged(undefined, this.tableCapacity);
-    }
-    clearItems() {
+    };
+    TableView.prototype.clearItems = function () {
         var hasFocus = this.tableView.contains(document.activeElement);
         this.tbody.innerHTML = '';
         if (hasFocus)
             this.tableView.focus();
-    }
-    displayItems(start) {
+    };
+    TableView.prototype.displayItems = function (start) {
         this.startPosition = start;
         this.itemsCount = this.observableItems.getItemsCount();
         if (this.tableCapacity == -1) {
@@ -262,8 +270,8 @@ class TableView {
             this.tbody.appendChild(node);
         }
         this.scrollbar.itemsChanged(this.itemsCount, this.tableCapacity, this.startPosition);
-    }
-    upOne() {
+    };
+    TableView.prototype.upOne = function () {
         if (this.currentItemIndex == 0)
             return;
         this.scrollIntoView();
@@ -283,8 +291,8 @@ class TableView {
         this.tbody.querySelectorAll('tr')[this.currentItemIndex - this.startPosition].focus();
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
-    }
-    pageUp() {
+    };
+    TableView.prototype.pageUp = function () {
         if (this.currentItemIndex == 0)
             return;
         this.scrollIntoView();
@@ -300,8 +308,8 @@ class TableView {
         this.tbody.querySelectorAll('tr')[this.currentItemIndex - this.startPosition].focus();
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
-    }
-    pageDown() {
+    };
+    TableView.prototype.pageDown = function () {
         if (this.currentItemIndex == this.itemsCount - 1)
             return;
         this.scrollIntoView();
@@ -320,8 +328,8 @@ class TableView {
         this.tbody.querySelectorAll('tr')[this.currentItemIndex - this.startPosition].focus();
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
-    }
-    end() {
+    };
+    TableView.prototype.end = function () {
         this.clearItems();
         this.currentItemIndex = this.itemsCount - 1;
         var startPos = this.currentItemIndex - this.tableCapacity + 1;
@@ -331,8 +339,8 @@ class TableView {
         this.tbody.querySelectorAll('tr')[this.currentItemIndex - this.startPosition].focus();
         if (this.onCurrentItemChanged)
             this.onCurrentItemChanged(this.currentItemIndex);
-    }
-    scrollIntoView() {
+    };
+    TableView.prototype.scrollIntoView = function () {
         var selector = this.currentItemIndex - this.startPosition;
         if (selector < 0)
             this.scroll(this.currentItemIndex);
@@ -340,8 +348,8 @@ class TableView {
             this.scroll(this.currentItemIndex);
             this.scroll(this.currentItemIndex - this.tableCapacity + 1);
         }
-    }
-    scroll(position) {
+    };
+    TableView.prototype.scroll = function (position) {
         if (this.itemsCount < this.tableCapacity)
             return;
         if (position < 0)
@@ -356,13 +364,14 @@ class TableView {
             this.tbody.querySelectorAll('tr')[this.currentItemIndex - this.startPosition].focus();
         else
             this.tableView.focus();
-    }
-    resizeChecking() {
+    };
+    TableView.prototype.resizeChecking = function () {
+        var _this = this;
         if (this.tableView.clientHeight != this.recentHeight) {
             var isFocused = this.tableView.contains(document.activeElement);
             this.recentHeight = this.tableView.clientHeight;
             if (this.tableCapacity == -1)
-                window.requestAnimationFrame(() => this.resizeChecking());
+                window.requestAnimationFrame(function () { return _this.resizeChecking(); });
             var tableCapacityOld = this.tableCapacity;
             this.calculateTableHeight();
             var itemsCountOld = Math.min(tableCapacityOld + 1, this.itemsCount - this.startPosition);
@@ -380,8 +389,9 @@ class TableView {
             if (isFocused)
                 this.focus();
         }
-        window.requestAnimationFrame(() => this.resizeChecking());
-    }
-}
+        window.requestAnimationFrame(function () { return _this.resizeChecking(); });
+    };
+    return TableView;
+}());
 var tableViewId = 1000;
 //# sourceMappingURL=tableview.js.map

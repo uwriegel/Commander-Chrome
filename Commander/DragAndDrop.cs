@@ -10,27 +10,36 @@ namespace Commander
 
         public void Initialize(IntPtr hwnd)
         {
-            var cp = Marshal.GetFunctionPointerForDelegate<DragAndDropCallbackDelegate>(dragAndDropCallback);
-            InitializeDragAndDrop(hwnd, cp);
+            var cp = Marshal.GetFunctionPointerForDelegate<OnDragOverDelegate>(onDragOver);
+            var cp2 = Marshal.GetFunctionPointerForDelegate<OnDragLeaveDelegate>(OnDragLeave);
+            InitializeDragAndDrop(hwnd, cp, cp2);
             var module = LoadLibrary("Api.dll");
         }
 
-        bool DragAndDropCallback(int x, int y)
+        bool OnDragOver(int x, int y)
         {
             EventSession.DragOver(x, y);
             return true;
         }
 
-        DragAndDrop()
+        void OnDragLeave()
         {
-            dragAndDropCallback = new DragAndDropCallbackDelegate(DragAndDropCallback);
+            EventSession.DragLeave();
         }
 
-        DragAndDropCallbackDelegate dragAndDropCallback;
+        DragAndDrop()
+        {
+            onDragOver = new OnDragOverDelegate(OnDragOver);
+            onLeave = new OnDragLeaveDelegate(OnDragLeave);
+        }
 
-        delegate bool DragAndDropCallbackDelegate(int x, int y);
+        OnDragOverDelegate onDragOver;
+        OnDragLeaveDelegate onLeave;
+
+        delegate bool OnDragOverDelegate(int x, int y);
+        delegate void OnDragLeaveDelegate();
         [DllImport("Api.dll", EntryPoint = "initialize_drag_and_drop")]
-        static extern void InitializeDragAndDrop(IntPtr hwnd, IntPtr callback);
+        static extern void InitializeDragAndDrop(IntPtr hwnd, IntPtr onDragOverCallback, IntPtr onDragLeaveCallback);
         [DllImport("kernel32.dll")]
         static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string fileName);
     }

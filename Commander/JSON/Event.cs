@@ -14,13 +14,17 @@ class Event
     [DataMember(EmitDefaultValue = false, Name = "itemUpdates")]
     public ItemUpdate[] ItemUpdates { get; set; } = null;
 
-    [DataMember(Name = "id")]
+    [DataMember(EmitDefaultValue = false, Name = "id")]
     public string Id { get; set; }
 
-    [DataMember(Name = "refresh")]
+    [DataMember(EmitDefaultValue = false, Name = "refresh")]
     public bool Refresh{ get; set; }
 
     [DataMember(EmitDefaultValue = false, Name = "dragOver")]
     public DragOver DragOver { get; set; }
+
+
+    [DataMember(EmitDefaultValue = false, Name = "dragLeave")]
+    public bool DragLeave { get; set; }
 }
 

@@ -398,6 +398,11 @@ class CommanderView
         return this.tableView.isMouseWithin(x, y)
     }
 
+    dragLeave()
+    {
+        this.tableView.dragLeave()
+    }
+
     private processItem(itemIndex: number, openWith: boolean, showProperties: boolean, fromOtherView?: boolean)
     {
         var dir: string

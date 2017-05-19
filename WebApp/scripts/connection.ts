@@ -22,6 +22,8 @@ var Connection = (function ()
             Commander.getCommanderView(evt.id).refresh()
         if (evt.dragOver)
             Commander.dragOver(evt.dragOver.x, evt.dragOver.y)
+        if (evt.dragLeave)
+            Commander.dragLeave()
     }
 
     /**

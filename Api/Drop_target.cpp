@@ -4,20 +4,21 @@ using namespace std;
 
 extern "C"
 {
-	void initialize_drag_and_drop(HWND hwnd, drag_and_drop_callback_method* drag_and_drop_callback)
+	void initialize_drag_and_drop(HWND hwnd, on_drag_over_method* on_drag_over, on_drag_leave_method* on_drag_leave)
 	{
 		auto hr = RevokeDragDrop(hwnd);
-		auto drop_target = new Drop_target(hwnd, drag_and_drop_callback);
+		auto drop_target = new Drop_target(hwnd, on_drag_over, on_drag_leave);
 		hr = RegisterDragDrop(hwnd, drop_target);
 		drop_target->Release();
 	}
 }
 
-Drop_target::Drop_target(HWND hwnd, drag_and_drop_callback_method* drag_and_drop_callback)
+Drop_target::Drop_target(HWND hwnd, on_drag_over_method* on_drag_over, on_drag_leave_method* on_drag_leave)
 	: refcount(1)
 	, active(false)
 	, hwnd(hwnd)
-	, drag_and_drop_callback(drag_and_drop_callback)
+	, on_drag_over(on_drag_over)
+	, on_drag_leave(on_drag_leave)
 {
 }
 
@@ -55,9 +56,11 @@ HRESULT __stdcall Drop_target::DragEnter(IDataObject *data_object, DWORD key_sta
 
 			POINT p{ pt.x, pt.y };
 			ScreenToClient(hwnd, &p);
-			if (drag_and_drop_callback(p.x, p.y))
+			if (on_drag_over(p.x, p.y))
 				*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
 					key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+			else
+				*pdwEffect = DROPEFFECT_NONE;
 		}
 	}
 
@@ -68,15 +71,19 @@ HRESULT __stdcall Drop_target::DragOver(DWORD key_state, POINTL pt, DWORD *pdwEf
 {
 	POINT p{ pt.x, pt.y };
 	ScreenToClient(hwnd, &p);
-	if (active && drag_and_drop_callback(p.x, p.y))
+	if (active && on_drag_over(p.x, p.y))
 		*pdwEffect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
-			key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+		key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+	else
+		*pdwEffect = DROPEFFECT_NONE;
+
 	return S_OK;
 }
 
 HRESULT __stdcall Drop_target::DragLeave()
 {
 	active = false;
+	on_drag_leave();
 	return S_OK;
 }
 

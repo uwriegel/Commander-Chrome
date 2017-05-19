@@ -275,7 +275,8 @@ class TableView implements IObservator
             item.classList.remove("selected")
     }
 
-    isMouseWithin(x: number, y: number): boolean {
+    isMouseWithin(x: number, y: number): boolean
+    {
         var rect = this.tableView.getBoundingClientRect()
         rect.left, rect.top, rect.width, rect.bottom
 
@@ -288,6 +289,11 @@ class TableView implements IObservator
         else
             this.tableView.classList.remove("highlight")
         return result
+    }
+
+    dragLeave()
+    {
+        this.tableView.classList.remove("highlight")
     }
 
     private initializeRowHeight()

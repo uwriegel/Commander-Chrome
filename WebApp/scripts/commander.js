@@ -137,6 +137,10 @@ var Commander = (function () {
         if (rightView.isMouseInTableView(x, y))
             console.log("Drag: " + x + ", " + y);
     }
+    function dragLeave() {
+        leftView.dragLeave();
+        rightView.dragLeave();
+    }
     function toggleHidden() {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -153,7 +157,8 @@ var Commander = (function () {
     }
     return {
         getCommanderView: getCommanderView,
-        dragOver: dragOver
+        dragOver: dragOver,
+        dragLeave: dragLeave
     };
 })();
 //# sourceMappingURL=commander.js.map

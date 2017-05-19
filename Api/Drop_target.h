@@ -1,11 +1,12 @@
 #pragma once
 
-using drag_and_drop_callback_method = bool(int x, int y);
+using on_drag_over_method = bool(int x, int y);
+using on_drag_leave_method = void();
 
 class Drop_target : public IDropTarget
 {
 public:
-	Drop_target(HWND hwnd, drag_and_drop_callback_method* drag_and_drop_callback);
+	Drop_target(HWND hwnd, on_drag_over_method* on_drag_over, on_drag_leave_method* on_drag_leave);
 private:
 	HRESULT __stdcall DragEnter(IDataObject *pDataObj, DWORD grfKeyState, POINTL pt, DWORD *pdwEffect);
 	HRESULT __stdcall DragOver(DWORD grfKeyState, POINTL pt, DWORD *pdwEffect);
@@ -19,7 +20,8 @@ public:
 private:
 
 	bool active;
-	drag_and_drop_callback_method* drag_and_drop_callback;
+	on_drag_over_method* on_drag_over;
+	on_drag_leave_method* on_drag_leave;
 	HWND hwnd;
 	DWORD refcount;
 };

@@ -126,6 +126,12 @@ var Commander = (function ()
             console.log(`Drag: ${x}, ${y}`);
     }
 
+    function dragLeave()
+    {
+        leftView.dragLeave()
+        rightView.dragLeave()
+    }
+
     async function toggleHidden()
     {
         await Connection.toggleHidden()
@@ -135,7 +141,8 @@ var Commander = (function ()
 
     return {
         getCommanderView: getCommanderView,
-        dragOver: dragOver
+        dragOver: dragOver,
+        dragLeave: dragLeave
     }
 })()
 

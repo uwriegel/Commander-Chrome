@@ -71,11 +71,12 @@ declare class DragOver
 
 declare class CommanderEvent 
 {
-    id: string 
+    id?: string 
     refresh?: boolean
     serviceItems: ServiceItemUpdate[]
     itemUpdates: ItemUpdate[]
     dragOver: DragOver
+    dragLeave?: boolean
 }
 
 declare class ConflictItem
