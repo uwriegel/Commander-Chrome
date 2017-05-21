@@ -11,7 +11,7 @@ namespace Commander
         public void Initialize(IntPtr hwnd)
         {
             var cp = Marshal.GetFunctionPointerForDelegate<OnDragOverDelegate>(onDragOver);
-            var cp2 = Marshal.GetFunctionPointerForDelegate<OnDragLeaveDelegate>(OnDragLeave);
+            var cp2 = Marshal.GetFunctionPointerForDelegate<OnDragLeaveDelegate>(onDragLeave);
             InitializeDragAndDrop(hwnd, cp, cp2);
             var module = LoadLibrary("Api.dll");
         }
@@ -30,11 +30,11 @@ namespace Commander
         DragAndDrop()
         {
             onDragOver = new OnDragOverDelegate(OnDragOver);
-            onLeave = new OnDragLeaveDelegate(OnDragLeave);
+            onDragLeave = new OnDragLeaveDelegate(OnDragLeave);
         }
 
         OnDragOverDelegate onDragOver;
-        OnDragLeaveDelegate onLeave;
+        OnDragLeaveDelegate onDragLeave;
 
         delegate bool OnDragOverDelegate(int x, int y);
         delegate void OnDragLeaveDelegate();
