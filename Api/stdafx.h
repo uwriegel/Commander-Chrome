@@ -14,6 +14,8 @@
 #include <OleIdl.h>
 #include <Shellapi.h>
 #include <array>
+#include <vector>
+#include <numeric>
 #include <string>
 #include <sstream>
 
