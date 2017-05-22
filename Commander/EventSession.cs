@@ -84,7 +84,27 @@ namespace Commander
                 var test = e;
             }
         }
-        
+
+        public static void Drop(int x, int y, string files)
+        {
+            try
+            {
+                //r Files = files.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).Select(n => new {kind = Kind.Directory, Name = n. });
+                EventSession.session.SendJson(new Event
+                {
+                    Drop = new Drop
+                    {
+                        X = x,
+                        Y = y,
+                        Files = files.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).Select(new )
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
 
         public static void UpdateServiceState(string id, Item[] serviceItem)
         {

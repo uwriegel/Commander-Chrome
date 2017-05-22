@@ -30,7 +30,7 @@ namespace Commander
 
         void OnDrop(int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string files)
         {
-
+            EventSession.Drop(x, y, files);
         }
 
         DragAndDrop()

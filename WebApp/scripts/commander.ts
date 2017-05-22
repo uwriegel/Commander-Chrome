@@ -132,6 +132,14 @@ var Commander = (function ()
         rightView.dragLeave()
     }
 
+    function drop(x: number, y: number, files: string[])
+    {
+        if (leftView.isMouseInTableView(x, y))
+            leftView.drop(x, y, files)
+        if (rightView.isMouseInTableView(x, y))
+            rightView.drop(x, y, files)
+    }
+
     async function toggleHidden()
     {
         await Connection.toggleHidden()
@@ -142,7 +150,8 @@ var Commander = (function ()
     return {
         getCommanderView: getCommanderView,
         dragOver: dragOver,
-        dragLeave: dragLeave
+        dragLeave: dragLeave,
+        drop: drop
     }
 })()
 

@@ -91,6 +91,7 @@
     <Compile Include="ImageUrl.cs" />
     <Compile Include="Json.cs" />
     <Compile Include="JSON\DragOver.cs" />
+    <Compile Include="JSON\Drop.cs" />
     <Compile Include="JSON\Event.cs" />
     <Compile Include="JSON\Items.cs" />
     <Compile Include="JSON\NewName.cs" />

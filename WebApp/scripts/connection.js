@@ -3,11 +3,11 @@
  */
 var Connection = (function () {
     var wsref = location.href.replace('http://', 'ws://');
-    var url = `${wsref}Commander`;
+    var url = wsref + "Commander";
     var webSocket = new WebSocket(url);
     var itemUpdatesCallbacks = {};
     var serviceItemsCallbacks = {};
-    webSocket.onmessage = param => {
+    webSocket.onmessage = function (param) {
         var evt = JSON.parse(param.data);
         var id = evt.id;
         if (evt.itemUpdates)
@@ -20,6 +20,8 @@ var Connection = (function () {
             Commander.dragOver(evt.dragOver.x, evt.dragOver.y);
         if (evt.dragLeave)
             Commander.dragLeave();
+        if (evt.drop)
+            Commander.drop(evt.drop.x, evt.drop.y, evt.drop.files);
     };
     /**
      * Hinzufügen eines Eventhandlers für Dateiinfoupdates
@@ -122,13 +124,13 @@ var Connection = (function () {
         return invoke("stopServices", services);
     }
     function invoke(method, param) {
-        return new Promise((resolve, reject) => {
+        return new Promise(function (resolve, reject) {
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onload = evt => {
+            xmlhttp.onload = function (evt) {
                 var result = JSON.parse(xmlhttp.responseText);
                 resolve(result);
             };
-            xmlhttp.open('POST', `Commander/${method}`, true);
+            xmlhttp.open('POST', "Commander/" + method, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             xmlhttp.send(JSON.stringify(param));
         });

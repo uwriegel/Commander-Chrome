@@ -24,6 +24,8 @@ var Connection = (function ()
             Commander.dragOver(evt.dragOver.x, evt.dragOver.y)
         if (evt.dragLeave)
             Commander.dragLeave()
+        if (evt.drop)
+            Commander.drop(evt.drop.x, evt.drop.y, evt.drop.files);
     }
 
     /**

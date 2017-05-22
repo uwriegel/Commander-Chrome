@@ -403,6 +403,11 @@ class CommanderView
         this.tableView.dragLeave()
     }
 
+    drop(x: number, y: number, files: string[])
+    {
+        this.tableView.dragLeave()
+    }
+
     private processItem(itemIndex: number, openWith: boolean, showProperties: boolean, fromOtherView?: boolean)
     {
         var dir: string
