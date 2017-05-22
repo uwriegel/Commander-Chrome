@@ -1,13 +1,17 @@
 #include "stdafx.h"
 #include "drop_target.h"
+#include "resource.h"
 using namespace std;
 
 vector<wstring> get_files(IDataObject* data_object);
+
+HWND hwndMain;
 
 extern "C"
 {
 	void initialize_drag_and_drop(HWND hwnd, on_drag_over_method* on_drag_over, on_drag_leave_method* on_drag_leave, on_drop_method* on_drop)
 	{
+		hwndMain = hwnd;
 		auto hr = RevokeDragDrop(hwnd);
 		auto drop_target = new Drop_target(hwnd, on_drag_over, on_drag_leave, on_drop);
 		hr = RegisterDragDrop(hwnd, drop_target);
@@ -59,6 +63,11 @@ HRESULT __stdcall Drop_target::DragOver(DWORD key_state, POINTL pt, DWORD *effec
 HRESULT __stdcall Drop_target::DragLeave()
 {
 	active = false;
+
+	auto instance = LoadLibrary(L"Api.dll");
+	auto menu = LoadMenu(instance, MAKEINTRESOURCE(IDC_FENSTER));
+	SetMenu(hwndMain, menu);
+	FreeLibrary(instance);
 	on_drag_leave();
 	return S_OK;
 }

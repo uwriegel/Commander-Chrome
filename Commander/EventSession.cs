@@ -96,7 +96,7 @@ namespace Commander
                     {
                         X = x,
                         Y = y,
-                        Files = files.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).Select(new )
+//                        Files = files.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).Select(new )
                     }
                 });
             }

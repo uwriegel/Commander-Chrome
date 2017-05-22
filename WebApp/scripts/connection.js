@@ -3,11 +3,11 @@
  */
 var Connection = (function () {
     var wsref = location.href.replace('http://', 'ws://');
-    var url = wsref + "Commander";
+    var url = `${wsref}Commander`;
     var webSocket = new WebSocket(url);
     var itemUpdatesCallbacks = {};
     var serviceItemsCallbacks = {};
-    webSocket.onmessage = function (param) {
+    webSocket.onmessage = param => {
         var evt = JSON.parse(param.data);
         var id = evt.id;
         if (evt.itemUpdates)
@@ -124,13 +124,13 @@ var Connection = (function () {
         return invoke("stopServices", services);
     }
     function invoke(method, param) {
-        return new Promise(function (resolve, reject) {
+        return new Promise((resolve, reject) => {
             var xmlhttp = new XMLHttpRequest();
-            xmlhttp.onload = function (evt) {
+            xmlhttp.onload = evt => {
                 var result = JSON.parse(xmlhttp.responseText);
                 resolve(result);
             };
-            xmlhttp.open('POST', "Commander/" + method, true);
+            xmlhttp.open('POST', `Commander/${method}`, true);
             xmlhttp.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
             xmlhttp.send(JSON.stringify(param));
         });
