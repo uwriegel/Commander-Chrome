@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -28,9 +30,37 @@ namespace Commander
             EventSession.DragLeave();
         }
 
-        void OnDrop(int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string files)
+        void OnDrop(int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string filesString)
         {
-            EventSession.Drop(x, y, files);
+            EventSession.DragLeave();
+
+            var pathes = filesString.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
+            var items = (from n in pathes
+                              where Directory.Exists(n)
+                              let i = new DirectoryInfo(n)
+                              select new
+                              {
+                                  parent = i.Parent.FullName,
+                                  item = Item.CreateDirectoryItem(i.Name, i.LastWriteTime, false)
+                              }).Concat(
+            (from n in pathes
+                              where File.Exists(n)
+                              let i = new FileInfo(n)
+                              select new
+                              {
+                                  parent = i.DirectoryName,
+                                  item = Item.CreateFileItem(i.Name, i.FullName, i.Extension, i.LastWriteTime, i.Length, false)
+                              })).ToArray();
+            if (items.Length == 0)
+                return;
+
+            if (items.Any(n => string.Compare(n.parent, items[0].parent, true) != 0))
+            {
+                MessageBox.Show("Fehler");
+                return;
+            }
+
+            EventSession.Drop(x, y, items[0].parent, items.Select(n => n.item).ToArray());
         }
 
         DragAndDrop()

@@ -85,18 +85,18 @@ namespace Commander
             }
         }
 
-        public static void Drop(int x, int y, string files)
+        public static void Drop(int x, int y, string directory, Item[] items)
         {
             try
             {
-                //r Files = files.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).Select(n => new {kind = Kind.Directory, Name = n. });
                 EventSession.session.SendJson(new Event
                 {
                     Drop = new Drop
                     {
                         X = x,
                         Y = y,
-//                        Files = files.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).Select(new )
+                        Directory = directory,
+                        Items = items
                     }
                 });
             }

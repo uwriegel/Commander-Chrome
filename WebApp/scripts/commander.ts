@@ -132,12 +132,12 @@ var Commander = (function ()
         rightView.dragLeave()
     }
 
-    function drop(x: number, y: number, files: string[])
+    function drop(x: number, y: number, directory: string, items: Item[])
     {
         if (leftView.isMouseInTableView(x, y))
-            leftView.drop(x, y, files)
+            rightView.drop(directory, items)
         if (rightView.isMouseInTableView(x, y))
-            rightView.drop(x, y, files)
+            leftView.drop(directory, items)
     }
 
     async function toggleHidden()

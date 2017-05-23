@@ -159,7 +159,7 @@ class CommanderView {
                     this.tableView.downOne();
                     break;
                 case 46:
-                    this.processOperation(n => this.getDeleteOperationData(n), r => this.operateDelete(r));
+                    this.processOperation(null, n => this.getDeleteOperationData(n), r => this.operateDelete(r));
                     break;
                 case 69:
                     if (e.ctrlKey) {
@@ -189,12 +189,12 @@ class CommanderView {
                     this.executeRename(e.ctrlKey);
                     break;
                 case 116:
-                    this.processOperation(n => this.getCopyOperationData(n), (result) => {
+                    this.processOperation(null, n => this.getCopyOperationData(n), (result) => {
                         this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false);
                     });
                     break;
                 case 117:
-                    this.processOperation(n => this.getMoveOperationData(n), (result) => {
+                    this.processOperation(null, n => this.getMoveOperationData(n), (result) => {
                         this.operateFile(result, "Möchtest Du die ausgewählten Dateien verschieben?", true);
                     });
                     break;
@@ -338,8 +338,10 @@ class CommanderView {
     dragLeave() {
         this.tableView.dragLeave();
     }
-    drop(x, y, files) {
-        this.tableView.dragLeave();
+    drop(directory, items) {
+        this.processOperation(items, n => this.getDropCopyOperationData(directory, n), (result) => {
+            this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false);
+        });
     }
     processItem(itemIndex, openWith, showProperties, fromOtherView) {
         var dir;
@@ -438,8 +440,8 @@ class CommanderView {
             this.tableView.focus();
         }
     }
-    async processOperation(getOperationData, operate) {
-        var selection = this.getSelectedItems();
+    async processOperation(dropSelection, getOperationData, operate) {
+        var selection = dropSelection ? dropSelection : this.getSelectedItems();
         if (!selection.length)
             return;
         switch (this.currentDirectory) {
@@ -529,6 +531,14 @@ class CommanderView {
         return {
             operation: "move",
             sourceDir: this.currentDirectory,
+            targetDir: this.otherView.currentDirectory,
+            items: selection
+        };
+    }
+    getDropCopyOperationData(sourceDir, selection) {
+        return {
+            operation: "copy",
+            sourceDir: sourceDir,
             targetDir: this.otherView.currentDirectory,
             items: selection
         };

@@ -203,7 +203,7 @@ class CommanderView
                     this.tableView.downOne()
                     break
                 case 46: // DEL
-                    this.processOperation(n => this.getDeleteOperationData(n), r => this.operateDelete(r))
+                    this.processOperation(null, n => this.getDeleteOperationData(n), r => this.operateDelete(r))
                     break
                 case 69: // e
                     if (e.ctrlKey)
@@ -236,13 +236,13 @@ class CommanderView
                     this.executeRename(e.ctrlKey)
                     break;
                 case 116: // F5
-                    this.processOperation(n => this.getCopyOperationData(n), (result: OperationCheckResult) =>
+                    this.processOperation(null, n => this.getCopyOperationData(n), (result: OperationCheckResult) =>
                     {
                         this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false)
                     })
                     break
                 case 117: // F6
-                    this.processOperation(n => this.getMoveOperationData(n), (result: OperationCheckResult) =>
+                    this.processOperation(null, n => this.getMoveOperationData(n), (result: OperationCheckResult) =>
                     {
                         this.operateFile(result, "Möchtest Du die ausgewählten Dateien verschieben?", true)
                     })
@@ -403,9 +403,11 @@ class CommanderView
         this.tableView.dragLeave()
     }
 
-    drop(x: number, y: number, files: string[])
+    drop(directory: string, items: Item[])
     {
-        this.tableView.dragLeave()
+        this.processOperation(items, n => this.getDropCopyOperationData(directory, n), (result: OperationCheckResult) => {
+            this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false)
+        })
     }
 
     private processItem(itemIndex: number, openWith: boolean, showProperties: boolean, fromOtherView?: boolean)
@@ -526,9 +528,9 @@ class CommanderView
         }
     }
 
-    private async processOperation(getOperationData: (items: Item[]) => IOperationData, operate: (result: OperationCheckResult) => void)
+    private async processOperation(dropSelection: Item[], getOperationData: (items: Item[]) => IOperationData, operate: (result: OperationCheckResult) => void)
     {
-        var selection = this.getSelectedItems()
+        var selection = dropSelection ? dropSelection : this.getSelectedItems()
         if (!selection.length)
             return
 
@@ -621,7 +623,7 @@ class CommanderView
         return items
     }
 
-    private getCopyOperationData(selection)
+    private getCopyOperationData(selection: Item[]): IOperationData
     {
         return {
             operation: "copy",
@@ -631,7 +633,7 @@ class CommanderView
         }
     }
 
-    private getMoveOperationData(selection)
+    private getMoveOperationData(selection: Item[]): IOperationData
     {
         return {
             operation: "move",
@@ -641,6 +643,15 @@ class CommanderView
         }
     }
 
+    private getDropCopyOperationData(sourceDir: string, selection: Item[]): IOperationData {
+        return {
+            operation: "copy",
+            sourceDir: sourceDir,
+            targetDir: this.otherView.currentDirectory,
+            items: selection
+        }
+    }
+    
     private getDeleteOperationData(selection)
     {
         return {

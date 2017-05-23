@@ -14,7 +14,10 @@ class Drop
     [DataMember(Name = "y")]
     public int Y { get; set; }
 
-    [DataMember(Name = "files")]
-    public string[] Files { get; set; }
+    [DataMember(Name = "directory")]
+    public string Directory { get; set; }
+
+    [DataMember(Name = "items")]
+    public Item[] Items { get; set; }
 }
 

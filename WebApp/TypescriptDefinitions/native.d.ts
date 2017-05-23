@@ -73,7 +73,8 @@ declare class Drop
 {
     x: number
     y: number
-    files: string[]
+    directory: string
+    items: Item[]
 }
 
 declare class CommanderEvent 
