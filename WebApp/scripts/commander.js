@@ -106,11 +106,15 @@ var Commander = (function () {
         leftView.dragLeave();
         rightView.dragLeave();
     }
-    function drop(x, y, directory, items) {
-        if (leftView.isMouseInTableView(x, y))
-            rightView.drop(directory, items);
-        if (rightView.isMouseInTableView(x, y))
-            leftView.drop(directory, items);
+    function drop(x, y, dragDropKind, directory, items) {
+        if (leftView.isMouseInTableView(x, y)) {
+            leftView.dragLeave();
+            rightView.drop(dragDropKind, directory, items);
+        }
+        if (rightView.isMouseInTableView(x, y)) {
+            rightView.dragLeave();
+            leftView.drop(dragDropKind, directory, items);
+        }
     }
     async function toggleHidden() {
         await Connection.toggleHidden();

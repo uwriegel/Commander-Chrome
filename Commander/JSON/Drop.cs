@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Commander;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -13,6 +14,9 @@ class Drop
 
     [DataMember(Name = "y")]
     public int Y { get; set; }
+
+    [DataMember(Name = "dragDropKind")]
+    public DragDropKind DragDropKind { get; set; }
 
     [DataMember(Name = "directory")]
     public string Directory { get; set; }

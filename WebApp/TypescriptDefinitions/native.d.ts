@@ -73,6 +73,7 @@ declare class Drop
 {
     x: number
     y: number
+    dragDropKind: DragDropKind 
     directory: string
     items: Item[]
 }

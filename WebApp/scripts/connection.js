@@ -21,7 +21,7 @@ var Connection = (function () {
         if (evt.dragLeave)
             Commander.dragLeave();
         if (evt.drop)
-            Commander.drop(evt.drop.x, evt.drop.y, evt.drop.directory, evt.drop.items);
+            Commander.drop(evt.drop.x, evt.drop.y, evt.drop.dragDropKind, evt.drop.directory, evt.drop.items);
     };
     /**
      * Hinzufügen eines Eventhandlers für Dateiinfoupdates

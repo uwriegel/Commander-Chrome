@@ -4,8 +4,16 @@
 using namespace std;
 
 vector<wstring> get_files(IDataObject* data_object);
-
 HWND hwndMain;
+
+Drag_drop_kind get_drag_drop_kind(DWORD key_state)
+{
+	if (key_state & MK_CONTROL && key_state & MK_SHIFT)
+		return Drag_drop_kind::link;
+	if (key_state & MK_CONTROL)
+		return Drag_drop_kind::copy;
+	return Drag_drop_kind::move;
+}
 
 extern "C"
 {
@@ -40,8 +48,18 @@ HRESULT __stdcall Drop_target::DragEnter(IDataObject *data_object, DWORD key_sta
 		POINT p{ pt.x, pt.y };
 		ScreenToClient(hwnd, &p);
 		if (on_drag_over(p.x, p.y))
-			*effect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
-				key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+			switch (get_drag_drop_kind(key_state))
+			{
+				case Drag_drop_kind::copy:
+					*effect = DROPEFFECT_COPY;
+					break;
+				case Drag_drop_kind::move:
+					*effect = DROPEFFECT_MOVE;
+					break;
+				case Drag_drop_kind::link:
+					*effect = DROPEFFECT_LINK;
+					break;
+			}
 	}
 
 	return S_OK;
@@ -52,8 +70,18 @@ HRESULT __stdcall Drop_target::DragOver(DWORD key_state, POINTL pt, DWORD *effec
 	POINT p{ pt.x, pt.y };
 	ScreenToClient(hwnd, &p);
 	if (active && on_drag_over(p.x, p.y))
-		*effect = key_state & MK_CONTROL && key_state & MK_SHIFT ? DROPEFFECT_LINK :
-		key_state & MK_CONTROL ? DROPEFFECT_COPY : DROPEFFECT_MOVE;
+		switch (get_drag_drop_kind(key_state))
+		{
+			case Drag_drop_kind::copy:
+				*effect = DROPEFFECT_COPY;
+				break;
+			case Drag_drop_kind::move:
+				*effect = DROPEFFECT_MOVE;
+				break;
+			case Drag_drop_kind::link:
+				*effect = DROPEFFECT_LINK;
+				break;
+		}
 	else
 		*effect = DROPEFFECT_NONE;
 
@@ -85,7 +113,7 @@ HRESULT __stdcall Drop_target::Drop(IDataObject *data_object, DWORD key_state, P
 				return s2;
 			return s1 + L"|"s + s2;
 		});
-		on_drop(p.x, p.y, combined.c_str());
+		on_drop(p.x, p.y, get_drag_drop_kind(key_state), combined.c_str());
 	}
 
 	*effect = DROPEFFECT_NONE;

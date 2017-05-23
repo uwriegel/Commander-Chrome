@@ -403,10 +403,19 @@ class CommanderView
         this.tableView.dragLeave()
     }
 
-    drop(directory: string, items: Item[])
+    drop(dragDropKind: DragDropKind, directory: string, items: Item[])
     {
-        this.processOperation(items, n => this.getDropCopyOperationData(directory, n), (result: OperationCheckResult) => {
-            this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false)
+        if (dragDropKind == DragDropKind.Link)
+        {
+            alert("Unterstützte ich nicht!");
+            return;
+        }
+
+        var u = directory
+        this.processOperation(items,
+            n => dragDropKind == DragDropKind.Copy ? this.getDropCopyOperationData(directory, n) : this.getDropMoveOperationData(directory, n), 
+            (result: OperationCheckResult) => {
+                this.operateFile(result, `Möchtest Du die ausgewählten Dateien ${dragDropKind == DragDropKind.Copy ? 'kopieren' : 'verschieben'}?`, false)
         })
     }
 
@@ -652,6 +661,15 @@ class CommanderView
         }
     }
     
+    private getDropMoveOperationData(sourceDir: string, selection: Item[]): IOperationData {
+        return {
+            operation: "move",
+            sourceDir: sourceDir,
+            targetDir: this.otherView.currentDirectory,
+            items: selection
+        }
+    }
+
     private getDeleteOperationData(selection)
     {
         return {
@@ -898,7 +916,12 @@ class CommanderView
     private extendedRename: ExtendedRename
 }
 
-
+enum DragDropKind
+{
+    Copy,
+    Move,
+    Link
+}
 
 
 

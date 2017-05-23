@@ -338,9 +338,14 @@ class CommanderView {
     dragLeave() {
         this.tableView.dragLeave();
     }
-    drop(directory, items) {
-        this.processOperation(items, n => this.getDropCopyOperationData(directory, n), (result) => {
-            this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false);
+    drop(dragDropKind, directory, items) {
+        if (dragDropKind == DragDropKind.Link) {
+            alert("Unterstützte ich nicht!");
+            return;
+        }
+        var u = directory;
+        this.processOperation(items, n => dragDropKind == DragDropKind.Copy ? this.getDropCopyOperationData(directory, n) : this.getDropMoveOperationData(directory, n), (result) => {
+            this.operateFile(result, `Möchtest Du die ausgewählten Dateien ${dragDropKind == DragDropKind.Copy ? 'kopieren' : 'verschieben'}?`, false);
         });
     }
     processItem(itemIndex, openWith, showProperties, fromOtherView) {
@@ -543,6 +548,14 @@ class CommanderView {
             items: selection
         };
     }
+    getDropMoveOperationData(sourceDir, selection) {
+        return {
+            operation: "move",
+            sourceDir: sourceDir,
+            targetDir: this.otherView.currentDirectory,
+            items: selection
+        };
+    }
     getDeleteOperationData(selection) {
         return {
             operation: "delete",
@@ -727,4 +740,10 @@ class CommanderView {
         }
     }
 }
+var DragDropKind;
+(function (DragDropKind) {
+    DragDropKind[DragDropKind["Copy"] = 0] = "Copy";
+    DragDropKind[DragDropKind["Move"] = 1] = "Move";
+    DragDropKind[DragDropKind["Link"] = 2] = "Link";
+})(DragDropKind || (DragDropKind = {}));
 //# sourceMappingURL=commanderview.js.map

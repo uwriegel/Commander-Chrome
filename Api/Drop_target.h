@@ -1,8 +1,15 @@
 #pragma once
 
+enum class Drag_drop_kind
+{
+	copy,
+	move,
+	link
+};
+
 using on_drag_over_method = bool(int x, int y);
 using on_drag_leave_method = void();
-using on_drop_method = void(int x, int y, const wchar_t* files);
+using on_drop_method = void(int x, int y, Drag_drop_kind drag_drop_kind, const wchar_t* files);
 
 class Drop_target : public IDropTarget
 {

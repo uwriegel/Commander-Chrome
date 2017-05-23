@@ -30,10 +30,9 @@ namespace Commander
             EventSession.DragLeave();
         }
 
-        void OnDrop(int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string filesString)
+        void OnDrop(int x, int y, DragDropKind dragDropKind, [MarshalAs(UnmanagedType.LPWStr)] string filesString)
         {
             EventSession.DragLeave();
-
             var pathes = filesString.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries);
             var items = (from n in pathes
                               where Directory.Exists(n)
@@ -60,7 +59,7 @@ namespace Commander
                 return;
             }
 
-            EventSession.Drop(x, y, items[0].parent, items.Select(n => n.item).ToArray());
+            EventSession.Drop(x, y, dragDropKind, items[0].parent, items.Select(n => n.item).ToArray());
         }
 
         DragAndDrop()
@@ -76,7 +75,7 @@ namespace Commander
 
         delegate bool OnDragOverDelegate(int x, int y);
         delegate void OnDragLeaveDelegate();
-        delegate void OnDropDelegate(int x, int y, [MarshalAs(UnmanagedType.LPWStr)] string files);
+        delegate void OnDropDelegate(int x, int y, DragDropKind dragDropKind, [MarshalAs(UnmanagedType.LPWStr)] string files);
         [DllImport("Api.dll", EntryPoint = "initialize_drag_and_drop")]
         static extern void InitializeDragAndDrop(IntPtr hwnd, IntPtr onDragOverCallback, IntPtr onDragLeaveCallback, IntPtr onDropCallback);
         [DllImport("kernel32.dll")]

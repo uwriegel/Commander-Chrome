@@ -85,7 +85,7 @@ namespace Commander
             }
         }
 
-        public static void Drop(int x, int y, string directory, Item[] items)
+        public static void Drop(int x, int y, DragDropKind dragDropKind, string directory, Item[] items)
         {
             try
             {
@@ -95,6 +95,7 @@ namespace Commander
                     {
                         X = x,
                         Y = y,
+                        DragDropKind = dragDropKind,
                         Directory = directory,
                         Items = items
                     }
