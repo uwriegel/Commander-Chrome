@@ -2,4 +2,3 @@ LIBRARY
 EXPORTS
 initialize_drag_and_drop
 start_drag
-affe

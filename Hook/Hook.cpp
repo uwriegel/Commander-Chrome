@@ -48,8 +48,7 @@ extern "C"
 		auto hook = SetWindowsHookEx(WH_GETMESSAGE, proc, module, 0);
 		PostMessage(commander_window, WM_APP + 200, 0, 0);
 
-		Sleep(500000);	
-		MessageBoxA(0, "", "", MB_OK);
-		//UnhookWindowsHookEx(hook);
+		Sleep(500);	
+		UnhookWindowsHookEx(hook);
 	}
 }
