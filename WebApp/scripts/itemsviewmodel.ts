@@ -124,7 +124,13 @@ class ItemsViewModel implements IItemsViewModel
         if (file.isHidden)
             template.classList.add("hidden")
         this.insertExtendedInfos(template, file)
+        template.ondragstart = evt => this.dragStart(evt)
         return template
+    }
+
+    private dragStart(evt)
+    {
+        var affe = evt
     }
 
     private insertServiceItem(service: Item) {

@@ -16,6 +16,7 @@ class ColumnsControl
         this.itemsSorter = itemsSorter
 
         this.itemTemplate = document.createElement("tr")
+        this.itemTemplate.draggable = true
         var td = document.createElement("td")
         td.classList.add("it-name")
         var nameDiv = document.createElement("div")

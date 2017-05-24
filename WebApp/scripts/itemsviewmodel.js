@@ -102,7 +102,11 @@ class ItemsViewModel {
         if (file.isHidden)
             template.classList.add("hidden");
         this.insertExtendedInfos(template, file);
+        template.ondragstart = evt => this.dragStart(evt);
         return template;
+    }
+    dragStart(evt) {
+        var affe = evt;
     }
     insertServiceItem(service) {
         var template = this.columnsControl.getItemTemplate();
