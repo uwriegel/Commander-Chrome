@@ -13,6 +13,7 @@
 
 #include <OleIdl.h>
 #include <Shellapi.h>
+#include <Shlobj.h>
 #include <array>
 #include <vector>
 #include <numeric>

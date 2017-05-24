@@ -78,6 +78,8 @@ namespace Commander
         delegate void OnDropDelegate(int x, int y, DragDropKind dragDropKind, [MarshalAs(UnmanagedType.LPWStr)] string files);
         [DllImport("Api.dll", EntryPoint = "initialize_drag_and_drop")]
         static extern void InitializeDragAndDrop(IntPtr hwnd, IntPtr onDragOverCallback, IntPtr onDragLeaveCallback, IntPtr onDropCallback);
+        [DllImport("Api.dll", EntryPoint = "start_drag")]
+        public static extern void StartDrag();
         [DllImport("kernel32.dll")]
         static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string fileName);
     }

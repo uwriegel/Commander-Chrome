@@ -130,7 +130,7 @@ class ItemsViewModel implements IItemsViewModel
 
     private dragStart(evt)
     {
-        var affe = evt
+        Connection.startDrag();
     }
 
     private insertServiceItem(service: Item) {

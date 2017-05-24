@@ -40,7 +40,7 @@ var Connection = (function () {
         serviceItemsCallbacks[id] = callback;
     }
     /**
-     * Ermittlung aller Einträge eines Verzichnisses
+     * Ermittlung aller Einträge eines Verzeichnisses
      * @param id Die Id des zugehörigen Controls
      * @param requestNumber die eindeutige, fortlaufende Nummer der Abfrage
      * @param directory Das Verzeichnis, das abgefragt werden soll
@@ -102,6 +102,10 @@ var Connection = (function () {
             items: items
         });
     }
+    function startDrag() {
+        var input = {};
+        return invoke("startDrag", input);
+    }
     function processItem(item, showProperties, openWith) {
         return invoke("processItem", {
             file: item,
@@ -146,6 +150,7 @@ var Connection = (function () {
         runOperation: runOperation,
         rename: rename,
         cancel: cancel,
+        startDrag: startDrag,
         processItem: processItem,
         startServices: startServices,
         stopServices: stopServices,

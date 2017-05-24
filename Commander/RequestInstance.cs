@@ -67,6 +67,10 @@ namespace Commander
                 case "extendedRename":
                     ExtendedRename(service);
                     break;
+                case "startDrag":
+                    DragAndDrop.StartDrag();
+                    service.SendResult(new object());
+                    break;
             }
         }
 

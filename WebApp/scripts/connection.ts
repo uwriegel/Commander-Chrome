@@ -49,7 +49,7 @@ var Connection = (function ()
     }
 
     /**
-     * Ermittlung aller Einträge eines Verzichnisses
+     * Ermittlung aller Einträge eines Verzeichnisses
      * @param id Die Id des zugehörigen Controls
      * @param requestNumber die eindeutige, fortlaufende Nummer der Abfrage
      * @param directory Das Verzeichnis, das abgefragt werden soll
@@ -131,6 +131,14 @@ var Connection = (function ()
         })
     }
 
+    function startDrag() 
+    {
+        var input =
+            {
+            }
+        return invoke("startDrag", input)
+    }
+
     function processItem(item: string, showProperties?: boolean, openWith?: boolean) 
     {
         return invoke("processItem", {
@@ -182,6 +190,7 @@ var Connection = (function ()
         runOperation: runOperation,
         rename: rename,
         cancel: cancel,
+        startDrag: startDrag,
         processItem: processItem,
         startServices: startServices,
         stopServices: stopServices,

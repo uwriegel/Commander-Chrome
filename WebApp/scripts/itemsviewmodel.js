@@ -106,7 +106,7 @@ class ItemsViewModel {
         return template;
     }
     dragStart(evt) {
-        var affe = evt;
+        Connection.startDrag();
     }
     insertServiceItem(service) {
         var template = this.columnsControl.getItemTemplate();

@@ -28,7 +28,7 @@ extern "C"
 }
 
 Drop_target::Drop_target(HWND hwnd, on_drag_over_method* on_drag_over, on_drag_leave_method* on_drag_leave, on_drop_method* on_drop)
-	: refcount(1)
+	: ref_count(1)
 	, active(false)
 	, hwnd(hwnd)
 	, on_drag_over(on_drag_over)
@@ -153,35 +153,35 @@ vector<wstring> get_files(IDataObject* data_object)
 	return result;
 }
 
-HRESULT __stdcall Drop_target::QueryInterface(REFIID riid, void **comObject)
+HRESULT __stdcall Drop_target::QueryInterface(REFIID riid, void **object)
 {
-	if (!comObject)
+	if (!object)
 		return E_POINTER;
 
 	if (IID_IDropTarget == riid)
-		*comObject = static_cast<IDropTarget*>(this);
+		*object = static_cast<IDropTarget*>(this);
 	else if (IID_IUnknown == riid)
-		*comObject = static_cast<IUnknown*>(this);
+		*object = static_cast<IUnknown*>(this);
 	else
 	{
-		*comObject = 0;
+		*object = 0;
 		return E_NOINTERFACE;
 	}
 
-	if (*comObject)
-		reinterpret_cast<IUnknown*>(*comObject)->AddRef();
+	if (*object)
+		reinterpret_cast<IUnknown*>(*object)->AddRef();
 
 	return S_OK;
 }
 
 ULONG __stdcall Drop_target::AddRef()
 {
-	return InterlockedIncrement(&refcount);
+	return InterlockedIncrement(&ref_count);
 }
 
 ULONG __stdcall Drop_target::Release()
 {
-	auto result = InterlockedDecrement(&refcount);
+	auto result = InterlockedDecrement(&ref_count);
 	if (result == 0)
 		delete this;
 	return result;

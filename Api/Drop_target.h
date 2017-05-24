@@ -32,5 +32,5 @@ private:
 	on_drag_leave_method* on_drag_leave;
 	on_drop_method* on_drop;
 	HWND hwnd;
-	DWORD refcount;
+	DWORD ref_count;
 };
