@@ -64,11 +64,6 @@ class TableView implements IObservator
             e.preventDefault() // prevent the default action (scroll / move caret)
         }
 
-        this.tableView.addEventListener('mousemove', e =>
-        {
-            console.log(`Maus: ${e.clientX}, ${e.clientY}`);
-        });
-
         this.recentHeight = this.tableView.clientHeight
 
         window.requestAnimationFrame(() => this.resizeChecking())
@@ -99,28 +94,18 @@ class TableView implements IObservator
 
         this.scrollbar.initialize(this)
 
-        this.tableView.onclick = evt =>
+        this.tbody.onmousedown = evt =>
         {
-            focus()
-        }
+            var tr = <HTMLTableRowElement>(<HTMLElement>evt.target).closest("tr")
+            this.currentItemIndex = Array.from(this.tbody.querySelectorAll("tr")).findIndex(n => n == tr) + this.startPosition
 
-        this.tbody.onclick = evt =>
-        {
-            var tr = <HTMLElement>(<HTMLElement>evt.target).closest("tr")
-            var trs = this.tbody.querySelectorAll("tr")
-            var index
-            for (var i = 0; i < trs.length; i++)
-            {
-                if (trs[i] == tr)
-                {
-                    index = i
-                    break
-                }
-            }
-            this.currentItemIndex = index + this.startPosition
             if (this.onCurrentItemChanged)
                 this.onCurrentItemChanged(this.currentItemIndex)
-            tr.focus()
+
+            if (!this.hasFocus())
+                tr.focus()
+            else if (this.onToggleSelection)
+                this.onToggleSelection(this.currentItemIndex)
         };
     }
 
@@ -172,6 +157,11 @@ class TableView implements IObservator
     setOnFocus(callback: ()=>void)
     {
         this.onFocus = callback
+    }
+
+    setOnToggleSelection(callback: (itemIndex: number) => void)
+    {
+        this.onToggleSelection = callback
     }
 
     getCurrentItemIndex()
@@ -321,10 +311,15 @@ class TableView implements IObservator
 
     private clearItems()
     {
-        var hasFocus = this.tableView.contains(document.activeElement)
+        var hasFocus = this.hasFocus() 
         this.tbody.innerHTML = ''
         if (hasFocus)
             this.tableView.focus()
+    }
+
+    private hasFocus()
+    {
+        return this.tableView.contains(document.activeElement)
     }
 
     private displayItems(start)
@@ -526,7 +521,8 @@ class TableView implements IObservator
     private thead: HTMLTableSectionElement
     private tbody: HTMLTableSectionElement
 
-    private onCurrentItemChanged: (itemIndex: number)=>void
+    private onCurrentItemChanged: (itemIndex: number) => void
+    private onToggleSelection: (itemIndex: number) => void
     private onSelectedCallback: (itemIndex: number, openWith: boolean, showProperties: boolean)=>void
     private onFocus: ()=>void
 }

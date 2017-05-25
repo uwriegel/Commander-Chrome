@@ -63,9 +63,6 @@ class TableView {
             }
             e.preventDefault(); // prevent the default action (scroll / move caret)
         };
-        this.tableView.addEventListener('mousemove', e => {
-            console.log(`Maus: ${e.clientX}, ${e.clientY}`);
-        });
         this.recentHeight = this.tableView.clientHeight;
         window.requestAnimationFrame(() => this.resizeChecking());
         this.thead = document.createElement("thead");
@@ -86,23 +83,15 @@ class TableView {
             this.thead.appendChild(tr);
         }
         this.scrollbar.initialize(this);
-        this.tableView.onclick = evt => {
-            focus();
-        };
-        this.tbody.onclick = evt => {
+        this.tbody.onmousedown = evt => {
             var tr = evt.target.closest("tr");
-            var trs = this.tbody.querySelectorAll("tr");
-            var index;
-            for (var i = 0; i < trs.length; i++) {
-                if (trs[i] == tr) {
-                    index = i;
-                    break;
-                }
-            }
-            this.currentItemIndex = index + this.startPosition;
+            this.currentItemIndex = Array.from(this.tbody.querySelectorAll("tr")).findIndex(n => n == tr) + this.startPosition;
             if (this.onCurrentItemChanged)
                 this.onCurrentItemChanged(this.currentItemIndex);
-            tr.focus();
+            if (!this.hasFocus())
+                tr.focus();
+            else if (this.onToggleSelection)
+                this.onToggleSelection(this.currentItemIndex);
         };
     }
     set Columns(value) {
@@ -137,6 +126,9 @@ class TableView {
     }
     setOnFocus(callback) {
         this.onFocus = callback;
+    }
+    setOnToggleSelection(callback) {
+        this.onToggleSelection = callback;
     }
     getCurrentItemIndex() {
         return this.currentItemIndex;
@@ -247,10 +239,13 @@ class TableView {
         this.scrollbar.itemsChanged(undefined, this.tableCapacity);
     }
     clearItems() {
-        var hasFocus = this.tableView.contains(document.activeElement);
+        var hasFocus = this.hasFocus();
         this.tbody.innerHTML = '';
         if (hasFocus)
             this.tableView.focus();
+    }
+    hasFocus() {
+        return this.tableView.contains(document.activeElement);
     }
     displayItems(start) {
         this.startPosition = start;

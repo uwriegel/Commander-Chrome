@@ -124,6 +124,7 @@ class CommanderView
         this.tableView.Columns = this.columnsControl
 
         this.tableView.setOnSelectedCallback((i, o, sp) => this.processItem(i, o, sp))
+        this.tableView.setOnToggleSelection(i => this.itemsSorter.toggleSelection(i))
 
         this.commanderDirectory.onfocus = () =>
         {
@@ -177,7 +178,10 @@ class CommanderView
                     e.preventDefault()
                     break
                 case 27: // ESC
-                    this.closeRestrict()
+                    if (this.restrictor)
+                        this.closeRestrict()
+                    else
+                        this.itemsSorter.selectAll(false)
                     break
                 case 32: // _
                     if (this.restrictor == null)
