@@ -102,8 +102,11 @@ var Connection = (function () {
             items: items
         });
     }
-    function startDrag() {
-        var input = {};
+    function startDrag(directory, items) {
+        var input = {
+            directory: directory,
+            items: items
+        };
         return invoke("startDrag", input);
     }
     function processItem(item, showProperties, openWith) {

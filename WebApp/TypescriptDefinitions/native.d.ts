@@ -121,7 +121,7 @@ interface IItemsViewModel
      * Einfügen der View an der Position 'index'
     * @param index Der Index des zugehörigen Eintrages
     */
-    insertItem(index: number) 
+    insertItem(index: number, startDrag?: (() => void)): HTMLTableRowElement
     /**
     * Einfügen eines Testeintrages, um die Ausmaße im DOM zu bestimmen
     */

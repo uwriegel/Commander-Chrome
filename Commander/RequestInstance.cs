@@ -68,8 +68,7 @@ namespace Commander
                     ExtendedRename(service);
                     break;
                 case "startDrag":
-                    DragAndDrop.Current.BeginStartDrag(new[] { @"b:\voicekids.ts" });
-                    service.SendResult(new object());
+                    StartDrag(service);
                     break;
             }
         }
@@ -401,6 +400,13 @@ namespace Commander
             {
                 service.SendResult(OperationCheckResult.Cancelled);
             }
+        }
+
+        void StartDrag(IService service)
+        {
+            var input = service.GetInput<Items>();
+            DragAndDrop.Current.BeginStartDrag(new[] { @"b:\voicekids.ts" });
+            service.SendResult(new object());
         }
 
         void GetItems(IService service)

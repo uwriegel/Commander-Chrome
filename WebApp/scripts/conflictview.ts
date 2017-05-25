@@ -78,7 +78,11 @@ class ConflictView implements IObservable, IItemsViewModel
         return this.operationCheckResult.conflictItems.length
     }
 
-    insertItem(index)
+    /**
+     * Einfügen der View an der Position 'index'
+    * @param index Der Index des zugehörigen Eintrages
+    */
+    insertItem(index: number, startDrag?: (() => void)): HTMLTableRowElement
     {
         /// <summary>Gibt den View des Items an der Position index zurück</summary>
         /// <returns type="Element">View des Items an der Position index</returns>
@@ -107,9 +111,9 @@ class ConflictView implements IObservable, IItemsViewModel
     {
     }
 
-    private insertFileItem(conflictItem: ConflictItem)
+    private insertFileItem(conflictItem: ConflictItem) : HTMLTableRowElement
     {
-        var template = <HTMLElement>this.itemFactory.cloneNode(true);
+        var template = <HTMLTableRowElement>this.itemFactory.cloneNode(true);
         (<HTMLImageElement>template.querySelector('.it-image')).src = conflictItem.imageUrl
         template.querySelector('.it-nameValue').innerHTML = conflictItem.name
 

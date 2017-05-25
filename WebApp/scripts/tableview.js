@@ -130,6 +130,9 @@ class TableView {
     setOnToggleSelection(callback) {
         this.onToggleSelection = callback;
     }
+    setOnDragCallback(callback) {
+        this.onDragCallback = callback;
+    }
     getCurrentItemIndex() {
         return this.currentItemIndex;
     }
@@ -169,7 +172,7 @@ class TableView {
             this.startPosition += 1;
             this.scrollbar.setPosition(this.startPosition);
             if (this.currentItemIndex < this.itemsCount - 1) {
-                var node = this.itemsViewModel.insertItem(this.currentItemIndex + 1);
+                var node = this.insertItem(this.currentItemIndex + 1);
                 this.tbody.appendChild(node);
             }
         }
@@ -238,6 +241,9 @@ class TableView {
             this.tableCapacity = -1;
         this.scrollbar.itemsChanged(undefined, this.tableCapacity);
     }
+    insertItem(index) {
+        return this.itemsViewModel.insertItem(index, this.onDragCallback);
+    }
     clearItems() {
         var hasFocus = this.hasFocus();
         this.tbody.innerHTML = '';
@@ -256,7 +262,7 @@ class TableView {
         }
         var end = Math.min(this.tableCapacity + 1 + this.startPosition, this.itemsCount);
         for (var i = this.startPosition; i < end; i++) {
-            var node = this.itemsViewModel.insertItem(i);
+            var node = this.insertItem(i);
             this.tbody.appendChild(node);
         }
         this.scrollbar.itemsChanged(this.itemsCount, this.tableCapacity, this.startPosition);
@@ -274,7 +280,7 @@ class TableView {
             if (this.currentItemIndex >= 0) {
                 this.startPosition -= 1;
                 this.scrollbar.setPosition(this.startPosition);
-                var node = this.itemsViewModel.insertItem(this.currentItemIndex);
+                var node = this.insertItem(this.currentItemIndex);
                 this.tbody.insertBefore(node, this.tbody.firstChild);
             }
         }
@@ -371,7 +377,7 @@ class TableView {
             }
             else {
                 for (var i = itemsCountOld; i < itemsCountNew; i++) {
-                    var node = this.itemsViewModel.insertItem(i + this.startPosition);
+                    var node = this.insertItem(i + this.startPosition);
                     this.tbody.appendChild(node);
                 }
             }

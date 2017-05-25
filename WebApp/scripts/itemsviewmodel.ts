@@ -18,7 +18,7 @@ class ItemsViewModel implements IItemsViewModel
      * Einfügen der View an der Position 'index'
      * @param index Der Index des zugehörigen Eintrages
      */
-    insertItem(index: number) 
+    insertItem(index: number, startDrag?: (() => void)): HTMLTableRowElement
     {
         var item = this.itemsModel.getItem(index)
         switch (item.kind)
@@ -28,9 +28,9 @@ class ItemsViewModel implements IItemsViewModel
             case ItemsKind.Parent:
                 return this.insertParentItem(item)
             case ItemsKind.Directory:
-                return this.insertDirectoryItem(item)
+                return this.insertDirectoryItem(item, startDrag)
             case ItemsKind.File:
-                return this.insertFileItem(item)
+                return this.insertFileItem(item, startDrag)
             case ItemsKind.Favorite:
                 return this.insertFavoriteItem(item)
             case ItemsKind.History:
@@ -84,7 +84,8 @@ class ItemsViewModel implements IItemsViewModel
         return template
     }
 
-    private insertDirectoryItem(directory: Item) {
+    private insertDirectoryItem(directory: Item, startDrag?: (() => void)): HTMLTableRowElement
+    {
         var template = this.columnsControl.getItemTemplate();
         (<HTMLImageElement>template.querySelector('.it-image')).src = directory.imageUrl
         template.querySelector('.it-nameValue').innerHTML = directory.name
@@ -92,6 +93,11 @@ class ItemsViewModel implements IItemsViewModel
         if (directory.isHidden)
             template.classList.add("hidden")
         this.insertExtendedInfos(template, directory)
+        if (startDrag)
+        {
+            template.ondragstart = evt => startDrag()
+            template.draggable = true
+        }
         return template
     }
 
@@ -113,7 +119,7 @@ class ItemsViewModel implements IItemsViewModel
         return template
     }
 
-    private insertFileItem(file: Item)
+    private insertFileItem(file: Item, startDrag?: (() => void)): HTMLTableRowElement
     {
         var template = this.columnsControl.getItemTemplate();
         (<HTMLImageElement>template.querySelector('.it-image')).src = file.imageUrl
@@ -124,13 +130,12 @@ class ItemsViewModel implements IItemsViewModel
         if (file.isHidden)
             template.classList.add("hidden")
         this.insertExtendedInfos(template, file)
-        template.ondragstart = evt => this.dragStart(evt)
+        if (startDrag)
+        {
+            template.ondragstart = evt => startDrag()
+            template.draggable = true
+        }
         return template
-    }
-
-    private dragStart(evt)
-    {
-        Connection.startDrag();
     }
 
     private insertServiceItem(service: Item) {

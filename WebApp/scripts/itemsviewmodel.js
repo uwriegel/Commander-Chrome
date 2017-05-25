@@ -12,7 +12,7 @@ class ItemsViewModel {
      * Einfügen der View an der Position 'index'
      * @param index Der Index des zugehörigen Eintrages
      */
-    insertItem(index) {
+    insertItem(index, startDrag) {
         var item = this.itemsModel.getItem(index);
         switch (item.kind) {
             case ItemsKind.Drive:
@@ -20,9 +20,9 @@ class ItemsViewModel {
             case ItemsKind.Parent:
                 return this.insertParentItem(item);
             case ItemsKind.Directory:
-                return this.insertDirectoryItem(item);
+                return this.insertDirectoryItem(item, startDrag);
             case ItemsKind.File:
-                return this.insertFileItem(item);
+                return this.insertFileItem(item, startDrag);
             case ItemsKind.Favorite:
                 return this.insertFavoriteItem(item);
             case ItemsKind.History:
@@ -68,7 +68,7 @@ class ItemsViewModel {
         template.querySelector('.it-size').innerHTML = FileHelper.formatFileSize(drive.fileSize);
         return template;
     }
-    insertDirectoryItem(directory) {
+    insertDirectoryItem(directory, startDrag) {
         var template = this.columnsControl.getItemTemplate();
         template.querySelector('.it-image').src = directory.imageUrl;
         template.querySelector('.it-nameValue').innerHTML = directory.name;
@@ -76,6 +76,10 @@ class ItemsViewModel {
         if (directory.isHidden)
             template.classList.add("hidden");
         this.insertExtendedInfos(template, directory);
+        if (startDrag) {
+            template.ondragstart = evt => startDrag();
+            template.draggable = true;
+        }
         return template;
     }
     insertFavoriteItem(directory) {
@@ -92,7 +96,7 @@ class ItemsViewModel {
         template.querySelector('.it-path').innerHTML = directory.favoriteTarget;
         return template;
     }
-    insertFileItem(file) {
+    insertFileItem(file, startDrag) {
         var template = this.columnsControl.getItemTemplate();
         template.querySelector('.it-image').src = file.imageUrl;
         template.querySelector('.it-nameValue').innerHTML = FileHelper.getNameOnly(file.name);
@@ -102,11 +106,11 @@ class ItemsViewModel {
         if (file.isHidden)
             template.classList.add("hidden");
         this.insertExtendedInfos(template, file);
-        template.ondragstart = evt => this.dragStart(evt);
+        if (startDrag) {
+            template.ondragstart = evt => startDrag();
+            template.draggable = true;
+        }
         return template;
-    }
-    dragStart(evt) {
-        Connection.startDrag();
     }
     insertServiceItem(service) {
         var template = this.columnsControl.getItemTemplate();

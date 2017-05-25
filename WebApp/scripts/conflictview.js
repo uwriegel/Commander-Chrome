@@ -64,7 +64,11 @@ class ConflictView {
     getItemsCount() {
         return this.operationCheckResult.conflictItems.length;
     }
-    insertItem(index) {
+    /**
+     * Einfügen der View an der Position 'index'
+    * @param index Der Index des zugehörigen Eintrages
+    */
+    insertItem(index, startDrag) {
         /// <summary>Gibt den View des Items an der Position index zurück</summary>
         /// <returns type="Element">View des Items an der Position index</returns>
         var item = this.operationCheckResult.conflictItems[index];

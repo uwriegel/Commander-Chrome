@@ -164,6 +164,11 @@ class TableView implements IObservator
         this.onToggleSelection = callback
     }
 
+    setOnDragCallback(callback: () => void)
+    {
+        this.onDragCallback = callback
+    }
+
     getCurrentItemIndex()
     {
         return this.currentItemIndex
@@ -217,7 +222,7 @@ class TableView implements IObservator
             this.scrollbar.setPosition(this.startPosition)
             if (this.currentItemIndex < this.itemsCount - 1)
             {
-                var node = this.itemsViewModel.insertItem(this.currentItemIndex + 1)
+                var node = this.insertItem(this.currentItemIndex + 1)
                 this.tbody.appendChild(node)
             }
         }
@@ -309,6 +314,11 @@ class TableView implements IObservator
         this.scrollbar.itemsChanged(undefined, this.tableCapacity)
     }
 
+    private insertItem(index: number): HTMLTableRowElement
+    {
+        return this.itemsViewModel.insertItem(index, this.onDragCallback)
+    }
+
     private clearItems()
     {
         var hasFocus = this.hasFocus() 
@@ -336,7 +346,7 @@ class TableView implements IObservator
         var end = Math.min(this.tableCapacity + 1 + this.startPosition, this.itemsCount)
         for (var i = this.startPosition; i < end; i++)
         {
-            var node = this.itemsViewModel.insertItem(i)
+            var node = this.insertItem(i)
             this.tbody.appendChild(node)
         }
 
@@ -361,7 +371,7 @@ class TableView implements IObservator
             {
                 this.startPosition -= 1
                 this.scrollbar.setPosition(this.startPosition)
-                var node = this.itemsViewModel.insertItem(this.currentItemIndex)
+                var node = this.insertItem(this.currentItemIndex)
                 this.tbody.insertBefore(node, this.tbody.firstChild)
             }
         }
@@ -487,7 +497,7 @@ class TableView implements IObservator
             {
                 for (var i = itemsCountOld; i < itemsCountNew; i++)
                 {
-                    var node = this.itemsViewModel.insertItem(i + this.startPosition)
+                    var node = this.insertItem(i + this.startPosition)
                     this.tbody.appendChild(node)
                 }
             }
@@ -523,6 +533,7 @@ class TableView implements IObservator
 
     private onCurrentItemChanged: (itemIndex: number) => void
     private onToggleSelection: (itemIndex: number) => void
+    private onDragCallback: () => void
     private onSelectedCallback: (itemIndex: number, openWith: boolean, showProperties: boolean)=>void
     private onFocus: ()=>void
 }

@@ -131,10 +131,12 @@ var Connection = (function ()
         })
     }
 
-    function startDrag() 
+    function startDrag(directory: string, items: Item[]) 
     {
         var input =
             {
+                directory: directory,
+                items: items
             }
         return invoke("startDrag", input)
     }
