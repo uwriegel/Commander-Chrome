@@ -127,7 +127,12 @@ class CommanderView
         this.tableView.setOnToggleSelection(i => this.itemsSorter.toggleSelection(i))
         this.tableView.setOnDragCallback(() =>
         {
-            Connection.startDrag(this.id, this.currentDirectory, this.itemsModel.getSelectedItems())
+            var selectedItems = this.itemsModel.getSelectedItems()
+            if (selectedItems && selectedItems.length > 0)
+            {
+                this.dragStarted = true
+                Connection.startDrag(this.id, this.currentDirectory, selectedItems)
+            }
         })
 
         this.commanderDirectory.onfocus = () =>
@@ -403,7 +408,10 @@ class CommanderView
 
     isMouseInTableView(x: number, y: number): boolean
     {
-        return this.tableView.isMouseWithin(x, y)
+        if (!this.dragStarted)
+            return this.tableView.isMouseWithin(x, y)
+        else
+            return false;
     }
 
     dragLeave()
@@ -423,8 +431,16 @@ class CommanderView
         this.processOperation(items,
             n => dragDropKind == DragDropKind.Copy ? this.getDropCopyOperationData(directory, n) : this.getDropMoveOperationData(directory, n), 
             (result: OperationCheckResult) => {
-                this.operateFile(result, `Möchtest Du die ausgewählten Dateien ${dragDropKind == DragDropKind.Copy ? 'kopieren' : 'verschieben'}?`, false)
+                this.operateFile(result, `Möchtest Du die ausgewählten Dateien ${dragDropKind == DragDropKind.Copy ? 'kopieren' : 'verschieben'}?`,
+                    directory == this.currentDirectory ? true : false)
         })
+    }
+
+    dragFinished(refresh: boolean)
+    {
+        this.dragStarted = false
+        if (refresh)
+            this.refresh()
     }
 
     private processItem(itemIndex: number, openWith: boolean, showProperties: boolean, fromOtherView?: boolean)
@@ -922,6 +938,7 @@ class CommanderView
     private recentDirectories: string[] = []
     private historyWriterTimeouter: number
     private extendedRename: ExtendedRename
+    private dragStarted: boolean
 }
 
 enum DragDropKind

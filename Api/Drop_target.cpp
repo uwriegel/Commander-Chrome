@@ -102,6 +102,8 @@ HRESULT __stdcall Drop_target::DragLeave()
 
 HRESULT __stdcall Drop_target::Drop(IDataObject *data_object, DWORD key_state, POINTL pt, DWORD *effect)
 {
+	*effect = DROPEFFECT_NONE;
+
 	POINT p{ pt.x, pt.y };
 	ScreenToClient(hwnd, &p);
 	auto files = get_files(data_object);
@@ -113,10 +115,22 @@ HRESULT __stdcall Drop_target::Drop(IDataObject *data_object, DWORD key_state, P
 				return s2;
 			return s1 + L"|"s + s2;
 		});
-		on_drop(p.x, p.y, get_drag_drop_kind(key_state), combined.c_str());
+		auto drag_drop_kind = get_drag_drop_kind(key_state);
+		on_drop(p.x, p.y, drag_drop_kind, combined.c_str());
+		switch (drag_drop_kind)
+		{
+		case Drag_drop_kind::copy:
+			*effect = DROPEFFECT_COPY;
+			break;
+		case Drag_drop_kind::move:
+			*effect = DROPEFFECT_MOVE;
+			break;
+		case Drag_drop_kind::link:
+			*effect = DROPEFFECT_LINK;
+			break;
+		}
 	}
 
-	*effect = DROPEFFECT_NONE;
 	return S_OK;
 }
 

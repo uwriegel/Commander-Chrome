@@ -85,15 +85,16 @@ namespace Commander
             }
         }
 
-        public static void DragMoved(string commanderId)
+        public static void DragFinished(string commanderId, bool refresh)
         {
             try
             {
                 EventSession.session.SendJson(new Event
                 {
-                    DragMoved = new DragMoved
+                    DragFinished = new DragFinished
                     {
-                        CommanderId = commanderId
+                        CommanderId = commanderId,
+                        Refresh = refresh
                     }
                 });
             }

@@ -99,7 +99,11 @@ class CommanderView {
         this.tableView.setOnSelectedCallback((i, o, sp) => this.processItem(i, o, sp));
         this.tableView.setOnToggleSelection(i => this.itemsSorter.toggleSelection(i));
         this.tableView.setOnDragCallback(() => {
-            Connection.startDrag(this.id, this.currentDirectory, this.itemsModel.getSelectedItems());
+            var selectedItems = this.itemsModel.getSelectedItems();
+            if (selectedItems && selectedItems.length > 0) {
+                this.dragStarted = true;
+                Connection.startDrag(this.id, this.currentDirectory, selectedItems);
+            }
         });
         this.commanderDirectory.onfocus = () => {
             this.commanderDirectory.select();
@@ -340,7 +344,10 @@ class CommanderView {
         this.processItem(index, false, false, true);
     }
     isMouseInTableView(x, y) {
-        return this.tableView.isMouseWithin(x, y);
+        if (!this.dragStarted)
+            return this.tableView.isMouseWithin(x, y);
+        else
+            return false;
     }
     dragLeave() {
         this.tableView.dragLeave();
@@ -352,8 +359,13 @@ class CommanderView {
         }
         var u = directory;
         this.processOperation(items, n => dragDropKind == DragDropKind.Copy ? this.getDropCopyOperationData(directory, n) : this.getDropMoveOperationData(directory, n), (result) => {
-            this.operateFile(result, `Möchtest Du die ausgewählten Dateien ${dragDropKind == DragDropKind.Copy ? 'kopieren' : 'verschieben'}?`, false);
+            this.operateFile(result, `Möchtest Du die ausgewählten Dateien ${dragDropKind == DragDropKind.Copy ? 'kopieren' : 'verschieben'}?`, directory == this.currentDirectory ? true : false);
         });
+    }
+    dragFinished(refresh) {
+        this.dragStarted = false;
+        if (refresh)
+            this.refresh();
     }
     processItem(itemIndex, openWith, showProperties, fromOtherView) {
         var dir;

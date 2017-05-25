@@ -28,8 +28,7 @@ namespace Commander
         {
             var effect = Dispatcher.WindowElement.DoDragDrop(new DataObject(DataFormats.FileDrop, filesToDrag), 
                 DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link);
-            if (effect == DragDropEffects.Move)
-                EventSession.DragMoved(commanderId);
+            EventSession.DragFinished(commanderId, effect == DragDropEffects.Move);
         }
 
         bool OnDragOver(int x, int y)

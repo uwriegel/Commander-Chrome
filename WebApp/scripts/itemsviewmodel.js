@@ -77,7 +77,10 @@ class ItemsViewModel {
             template.classList.add("hidden");
         this.insertExtendedInfos(template, directory);
         if (startDrag) {
-            template.ondragstart = evt => startDrag();
+            template.ondragstart = evt => {
+                evt.preventDefault();
+                startDrag();
+            };
             template.draggable = true;
         }
         return template;
@@ -107,7 +110,10 @@ class ItemsViewModel {
             template.classList.add("hidden");
         this.insertExtendedInfos(template, file);
         if (startDrag) {
-            template.ondragstart = evt => startDrag();
+            template.ondragstart = evt => {
+                evt.preventDefault();
+                startDrag();
+            };
             template.draggable = true;
         }
         return template;

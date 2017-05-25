@@ -6,9 +6,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 [DataContract]
-class DragMoved
+class DragFinished
 {
     [DataMember(Name = "commanderId")]
     public string CommanderId { get; set; }
+
+    [DataMember(Name = "refresh")]
+    public bool Refresh { get; set; }
 }
 
