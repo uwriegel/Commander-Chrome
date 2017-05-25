@@ -19,6 +19,17 @@ namespace Commander
             var module = LoadLibrary("Api.dll");
         }
 
+        public void BeginStartDrag(string[] filesToDrag)
+        {
+            Dispatcher.BeginInvoke((Action)(() => StartDrag(filesToDrag)));
+        }
+
+        void StartDrag(string[] filesToDrag)
+        {
+            Dispatcher.WindowElement.DoDragDrop(new DataObject(DataFormats.FileDrop, filesToDrag), 
+                DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link);
+        }
+
         bool OnDragOver(int x, int y)
         {
             EventSession.DragOver(x, y);
@@ -78,8 +89,6 @@ namespace Commander
         delegate void OnDropDelegate(int x, int y, DragDropKind dragDropKind, [MarshalAs(UnmanagedType.LPWStr)] string files);
         [DllImport("Api.dll", EntryPoint = "initialize_drag_and_drop")]
         static extern void InitializeDragAndDrop(IntPtr hwnd, IntPtr onDragOverCallback, IntPtr onDragLeaveCallback, IntPtr onDropCallback);
-        [DllImport("Api.dll", EntryPoint = "start_drag")]
-        public static extern void StartDrag();
         [DllImport("kernel32.dll")]
         static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPStr)] string fileName);
     }

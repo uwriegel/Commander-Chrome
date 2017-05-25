@@ -42,6 +42,7 @@ namespace Commander
         public static void Start(string path, long hwnd)
         {
             Hwnd = new IntPtr(hwnd);
+            Dispatcher.Initialize(Hwnd);
             //var port = PortScanner.PortFound();
             var port = 20000;
 

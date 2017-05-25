@@ -204,6 +204,9 @@ namespace Commander
         [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern bool ShellExecuteEx(ref Api.SHELLEXECUTEINFO lpExecInfo);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
+
         [DllImport("user32.dll")]
         public static extern int SetActiveWindow(IntPtr hwnd);
 

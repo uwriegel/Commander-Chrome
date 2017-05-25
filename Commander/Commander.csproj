@@ -75,6 +75,7 @@
     <Compile Include="AdminRights.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="ClassExtensions\FileAttributes.cs" />
+    <Compile Include="Dispatcher.cs" />
     <Compile Include="DragAndDrop.cs" />
     <Compile Include="ElevatedOperation.cs" />
     <Compile Include="Enums\DragDropKind.cs" />
