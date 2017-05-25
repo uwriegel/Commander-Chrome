@@ -21,6 +21,7 @@ namespace Commander
         [STAThread]
         static void Main()
         {
+            // TODO: Nach erfolgreichem Drag Feedbeack: moved oder copied, nach moved Update
             // TODO: WebServer in Git local auf Google
             // TODO: https://stackoverflow.com/questions/5990019/drag-and-drop-files-from-a-zip-folder-into-my-window
             var info = new ProcessStartInfo(@"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe", $"--app=http://localhost:20000")

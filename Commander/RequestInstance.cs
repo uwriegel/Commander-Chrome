@@ -405,7 +405,8 @@ namespace Commander
         void StartDrag(IService service)
         {
             var input = service.GetInput<Items>();
-            DragAndDrop.Current.BeginStartDrag(new[] { @"b:\voicekids.ts" });
+            var files = input.items.Select(n => Path.Combine(input.directory, n.Name));
+            DragAndDrop.Current.BeginStartDrag(files.ToArray());
             service.SendResult(new object());
         }
 
