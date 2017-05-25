@@ -78,6 +78,11 @@ declare class Drop
     items: Item[]
 }
 
+declare class DragMoved
+{
+    commanderId: string
+}
+
 declare class CommanderEvent 
 {
     id?: string 
@@ -87,6 +92,7 @@ declare class CommanderEvent
     dragOver: DragOver
     dragLeave?: boolean
     drop: Drop
+    dragMoved: DragMoved
 }
 
 declare class ConflictItem

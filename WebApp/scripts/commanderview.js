@@ -99,7 +99,7 @@ class CommanderView {
         this.tableView.setOnSelectedCallback((i, o, sp) => this.processItem(i, o, sp));
         this.tableView.setOnToggleSelection(i => this.itemsSorter.toggleSelection(i));
         this.tableView.setOnDragCallback(() => {
-            Connection.startDrag(this.currentDirectory, this.itemsModel.getSelectedItems());
+            Connection.startDrag(this.id, this.currentDirectory, this.itemsModel.getSelectedItems());
         });
         this.commanderDirectory.onfocus = () => {
             this.commanderDirectory.select();

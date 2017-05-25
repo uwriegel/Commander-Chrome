@@ -392,7 +392,7 @@ namespace Commander
         {
             try
             {
-                var input = service.GetInput<Items>();
+                var input = service.GetInput<ItemsInput>();
                 Commander.ExtendedRename.Execute(input);
                 service.SendResult(OperationCheckResult.OK);
             }
@@ -404,9 +404,9 @@ namespace Commander
 
         void StartDrag(IService service)
         {
-            var input = service.GetInput<Items>();
-            var files = input.items.Select(n => Path.Combine(input.directory, n.Name));
-            DragAndDrop.Current.BeginStartDrag(files.ToArray());
+            var input = service.GetInput<ItemsInput>();
+            var files = input.Items.Select(n => Path.Combine(input.Directory, n.Name));
+            DragAndDrop.Current.BeginStartDrag(input.CommanderId, files.ToArray());
             service.SendResult(new object());
         }
 

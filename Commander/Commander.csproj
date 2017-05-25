@@ -92,6 +92,7 @@
     <Compile Include="FolderCreator.cs" />
     <Compile Include="ImageUrl.cs" />
     <Compile Include="Json.cs" />
+    <Compile Include="JSON\DragMoved.cs" />
     <Compile Include="JSON\DragOver.cs" />
     <Compile Include="JSON\Drop.cs" />
     <Compile Include="JSON\Event.cs" />

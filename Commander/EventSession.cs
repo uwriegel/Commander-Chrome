@@ -85,6 +85,24 @@ namespace Commander
             }
         }
 
+        public static void DragMoved(string commanderId)
+        {
+            try
+            {
+                EventSession.session.SendJson(new Event
+                {
+                    DragMoved = new DragMoved
+                    {
+                        CommanderId = commanderId
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                var test = e;
+            }
+        }
+
         public static void Drop(int x, int y, DragDropKind dragDropKind, string directory, Item[] items)
         {
             try

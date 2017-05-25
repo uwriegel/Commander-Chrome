@@ -26,6 +26,8 @@ var Connection = (function ()
             Commander.dragLeave()
         if (evt.drop)
             Commander.drop(evt.drop.x, evt.drop.y, evt.drop.dragDropKind, evt.drop.directory, evt.drop.items);
+        if (evt.dragMoved)
+            Commander.getCommanderView(evt.dragMoved.commanderId).refresh()
     }
 
     /**
@@ -131,12 +133,13 @@ var Connection = (function ()
         })
     }
 
-    function startDrag(directory: string, items: Item[]) 
+    function startDrag(commanderId: string, directory: string, items: Item[]) 
     {
         var input =
             {
                 directory: directory,
-                items: items
+                items: items,
+                commanderId: commanderId
             }
         return invoke("startDrag", input)
     }

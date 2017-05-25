@@ -127,7 +127,7 @@ class CommanderView
         this.tableView.setOnToggleSelection(i => this.itemsSorter.toggleSelection(i))
         this.tableView.setOnDragCallback(() =>
         {
-            Connection.startDrag(this.currentDirectory, this.itemsModel.getSelectedItems())
+            Connection.startDrag(this.id, this.currentDirectory, this.itemsModel.getSelectedItems())
         })
 
         this.commanderDirectory.onfocus = () =>

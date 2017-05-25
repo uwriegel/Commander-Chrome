@@ -9,21 +9,21 @@ namespace Commander
 {
     static class ExtendedRename
     {
-        public static void Execute(Items items)
+        public static void Execute(ItemsInput items)
         {
             try
             {
-                foreach (var item in items.items)
-                    CacheRename(items.directory, item);
-                foreach (var item in items.items)
-                    VerifyRename(items.directory, item);
-                foreach (var item in items.items)
-                    RenameFile(items.directory, item);
+                foreach (var item in items.Items)
+                    CacheRename(items.Directory, item);
+                foreach (var item in items.Items)
+                    VerifyRename(items.Directory, item);
+                foreach (var item in items.Items)
+                    RenameFile(items.Directory, item);
             }
             catch 
             {
-                foreach (var item in items.items)
-                    UndoRename(items.directory, item);
+                foreach (var item in items.Items)
+                    UndoRename(items.Directory, item);
                 throw;
             }   
         }

@@ -28,5 +28,8 @@ class Event
 
     [DataMember(EmitDefaultValue = false, Name = "dragLeave")]
     public bool DragLeave { get; set; }
+
+    [DataMember(EmitDefaultValue = false, Name = "dragMoved")]
+    public DragMoved DragMoved { get; set; }
 }
 

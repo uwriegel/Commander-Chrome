@@ -19,15 +19,17 @@ namespace Commander
             var module = LoadLibrary("Api.dll");
         }
 
-        public void BeginStartDrag(string[] filesToDrag)
+        public void BeginStartDrag(string commanderId, string[] filesToDrag)
         {
-            Dispatcher.BeginInvoke((Action)(() => StartDrag(filesToDrag)));
+            Dispatcher.BeginInvoke((Action)(() => StartDrag(commanderId, filesToDrag)));
         }
 
-        void StartDrag(string[] filesToDrag)
+        void StartDrag(string commanderId, string[] filesToDrag)
         {
-            Dispatcher.WindowElement.DoDragDrop(new DataObject(DataFormats.FileDrop, filesToDrag), 
+            var effect = Dispatcher.WindowElement.DoDragDrop(new DataObject(DataFormats.FileDrop, filesToDrag), 
                 DragDropEffects.Copy | DragDropEffects.Move | DragDropEffects.Link);
+            if (effect == DragDropEffects.Move)
+                EventSession.DragMoved(commanderId);
         }
 
         bool OnDragOver(int x, int y)
