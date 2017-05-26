@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "drop_target.h"
-#include "resource.h"
 using namespace std;
 
 vector<wstring> get_files(IDataObject* data_object);
@@ -91,11 +90,6 @@ HRESULT __stdcall Drop_target::DragOver(DWORD key_state, POINTL pt, DWORD *effec
 HRESULT __stdcall Drop_target::DragLeave()
 {
 	active = false;
-
-	auto instance = LoadLibrary(L"Api.dll");
-	auto menu = LoadMenu(instance, MAKEINTRESOURCE(IDC_FENSTER));
-	SetMenu(hwndMain, menu);
-	FreeLibrary(instance);
 	on_drag_leave();
 	return S_OK;
 }

@@ -23,7 +23,7 @@
     <ProjectGuid>{AABE4A4F-3C77-4295-BD3C-894A9AD80D9C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Api</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.14393.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="drop_target.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -170,9 +169,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="dll.def" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="Api.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

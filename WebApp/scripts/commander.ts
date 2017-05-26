@@ -1,5 +1,6 @@
 ﻿// TODO: Weiterentwicklung
 //
+// Start as Admin im Hintergrund
 // drives: Gespeicherte Ansichten
 // F10 MENÜ Erklärung der Tastenkürzel oder Hilfe
 // RegistryItems anzeigen
@@ -87,6 +88,8 @@ var Commander = (function ()
                     vgrid.switchBottom()
                     break
                 case 116: // F5
+                    break
+                case 121: // F10
                     break
                 default:
                     return
