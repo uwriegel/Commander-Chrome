@@ -1,0 +1,38 @@
+﻿header > ul
+{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+header > ul > li
+{
+    display: block;
+    float: left;
+    position: relative;
+    padding-left: 5px;
+    padding-top: 2px;
+    padding-right: 5px;
+    padding-bottom: 2px;
+}
+
+header > ul > li:hover
+{
+    background-color: blue;
+    color: white;
+}
+
+header > ul > li > ul
+{
+    background: yellow;
+    position: absolute;
+    z-index: 2000;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+}
+
+header > ul > li:hover ul
+{
+    opacity: 0;
+}

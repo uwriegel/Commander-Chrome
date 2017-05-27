@@ -66,6 +66,7 @@
     <TypeScriptCompile Include="scripts\viewer.ts" />
     <TypeScriptCompile Include="scripts\waitingitem.ts" />
     <Content Include="styles\dialog.css" />
+    <Content Include="styles\menu.css" />
     <Content Include="styles\tableView.css" />
     <Content Include="styles\waitingitem.css" />
     <Content Include="styles\index.css" />
