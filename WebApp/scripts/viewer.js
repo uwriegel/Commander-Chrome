@@ -23,7 +23,7 @@ class Viewer {
         this.lastFile = item;
         if (this.timer)
             clearTimeout(this.timer);
-        this.timer = setTimeout(function () {
+        this.timer = setTimeout(() => {
             if (item) {
                 //let itemCoded = `/Commander/File?path=${btoa(item)}`
                 let itemCoded = `/Commander/File?path=${btoa(encodeURIComponent(item))}`;

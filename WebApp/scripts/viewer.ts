@@ -32,7 +32,7 @@ class Viewer
         if (this.timer)
             clearTimeout(this.timer)
 
-        this.timer = setTimeout(function ()
+        this.timer = setTimeout(() =>
         {
             if (item)
             {

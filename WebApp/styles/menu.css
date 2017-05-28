@@ -20,7 +20,7 @@
 
 #menubar>li:hover
 {
-    background-color: lightblue;
+    background-color: rgb(235,235,255);
 }
 
 #menubar>li.selected
