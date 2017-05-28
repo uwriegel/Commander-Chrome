@@ -1,4 +1,6 @@
-﻿class Menu
+﻿// TODO: TOGGLE mit Alt funktioniert nicht
+
+class MenuBar
 {
     constructor()
     {
@@ -41,19 +43,45 @@
     {
         document.addEventListener("keydown", evt =>
         {
+            if (!this.isActive && evt.which == 18) // Alt
+            {
+                this.menuBar.classList.add("keyboardActivated")
+                this.keyboardActivated = true;
+            }
+
+            if (this.keyboardActivated && evt.which != 18) // Alt
+            {
+                let accs = <HTMLSpanElement[]>Array.from(this.menuBar.querySelectorAll(".keyboardActivated .accelerator"))
+                let acc = accs.find(n => n.innerText.toLowerCase() == evt.key)
+                if (acc)
+                {
+                    let li = <HTMLLIElement>acc.parentElement
+                    this.setActive()
+                    this.clearSelection()
+                    this.focusLi(li)
+                }
+                else
+                    this.closeOnAltKeyUp = true
+            }
+            
             if (!this.isActive)
                 return;
 
             switch (evt.which)
             {
                 case 9: // TAB
+                    this.close()
+                    break;
+                case 18: // Alt
+                    this.close()
+                    break;
                 case 27: // ESC
                     this.close()
                     break;
                 case 37: // <-
                     {
-                        let li = <HTMLLIElement>this.menuBar.querySelector("li.selected")
-                        let lis = Array.from(this.menuBar.querySelectorAll("li"))
+                        let li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li.selected")
+                        let lis = <HTMLLIElement[]>Array.from(this.menuBar.querySelectorAll("#menubar>li"))
                         var i = (lis).findIndex(n => n == li)
                         li = lis[i-1]
                         if (!li)
@@ -64,9 +92,9 @@
                     break;
                 case 39:// ->
                     {
-                        let li = <HTMLLIElement>this.menuBar.querySelector("li.selected + li")
+                        let li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li.selected + li")
                         if (!li)
-                            li = <HTMLLIElement>this.menuBar.querySelector("li")
+                            li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li")
                         this.clearSelection()
                         this.focusLi(li)
                     }
@@ -81,15 +109,14 @@
             switch (evt.which)
             {
                 case 18: // alt
-                    if (!this.hasFocus)
+                    if (!this.hasFocus && !this.closeOnAltKeyUp)
                     {
                         this.clearSelection()
                         this.setActive()
-                        let li = <HTMLLIElement>this.menuBar.querySelector("li:first-Child")
+                        let li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li:first-Child")
                         this.focusLi(li)
                     }
-                    else
-                        this.close()
+                    this.closeOnAltKeyUp = false
                     break;
             }
         }
@@ -98,12 +125,21 @@
     private setActive()
     {
         this.focusedView = commanderInstance.getFocused()
+        let lis = <HTMLLIElement[]>Array.from(this.menuBar.querySelectorAll("#menubar>li"))
+        lis.forEach(n => 
+        {
+            n.onmouseover = evt =>
+            {
+                this.clearSelection()
+                this.focusLi(<HTMLLIElement>evt.currentTarget)
+            }
+        })
         this.hasFocus = true
     }
 
     private clearSelection()
     {
-        Array.from(this.menuBar.querySelectorAll("li")).forEach(n => n.classList.remove("selected"))
+        Array.from(this.menuBar.querySelectorAll("#menubar>li")).forEach(n => n.classList.remove("selected"))
     }
 
     private focusLi(li: HTMLLIElement)
@@ -115,14 +151,20 @@
 
     private close()
     {
+        this.menuBar.classList.remove("keyboardActivated")
+        this.keyboardActivated = false;
         this.clearSelection()
         this.hasFocus = false
         this.isActive = false
         this.focusedView.focus()
+        let lis = <HTMLLIElement[]>Array.from(this.menuBar.querySelectorAll("#menubar>li"))
+        lis.forEach(n => n.onmouseover = null)
     }
 
     private menuBar: HTMLUListElement
     private hasFocus: boolean
     private focusedView: CommanderView
     private isActive: boolean
+    private keyboardActivated: boolean
+    private closeOnAltKeyUp: boolean
 }

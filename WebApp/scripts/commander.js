@@ -23,7 +23,7 @@ class Commander {
         this.leftView.initialize();
         this.rightView.initialize();
         this.leftView.focus();
-        this.menu = new Menu();
+        this.menu = new MenuBar();
         var gridElement = document.getElementById("grid");
         var viewerElement = document.getElementById("viewer");
         var grid = Grid(gridElement, document.getElementById("leftView"), document.getElementById("rightView"), document.getElementById("grip"), () => this.focusedView.focus());

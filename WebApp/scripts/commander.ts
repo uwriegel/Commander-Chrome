@@ -29,7 +29,7 @@ class Commander
         this.rightView.initialize()
         this.leftView.focus()
 
-        this.menu = new Menu()
+        this.menu = new MenuBar()
 
         var gridElement = <HTMLDivElement>document.getElementById("grid")
         var viewerElement = document.getElementById("viewer")
@@ -172,7 +172,7 @@ class Commander
     private leftView: CommanderView
     private rightView: CommanderView
     private focusedView: CommanderView
-    private menu: Menu
+    private menu: MenuBar
     private vgrid: VerticalGrid
     private footer: HTMLElement
     private viewer: Viewer

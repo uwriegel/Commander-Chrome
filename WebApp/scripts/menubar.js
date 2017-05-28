@@ -1,4 +1,5 @@
-class Menu {
+// TODO: TOGGLE mit Alt funktioniert nicht
+class MenuBar {
     constructor() {
         this.menuBar = document.getElementById("menubar");
         this.menuBar.addEventListener("focusout", evt => {
@@ -125,4 +126,4 @@ class Menu {
         lis.forEach(n => n.onmouseover = null);
     }
 }
-//# sourceMappingURL=menu.js.map
+//# sourceMappingURL=menubar.js.map

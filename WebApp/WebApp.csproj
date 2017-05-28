@@ -54,7 +54,7 @@
     <TypeScriptCompile Include="scripts\favorites.ts" />
     <TypeScriptCompile Include="scripts\filehelper.ts" />
     <TypeScriptCompile Include="scripts\grid.ts" />
-    <TypeScriptCompile Include="scripts\menu.ts" />
+    <TypeScriptCompile Include="scripts\menubar.ts" />
     <TypeScriptCompile Include="scripts\savedhistory.ts" />
     <TypeScriptCompile Include="scripts\itemsmodel.ts" />
     <TypeScriptCompile Include="scripts\itemssorter.ts" />

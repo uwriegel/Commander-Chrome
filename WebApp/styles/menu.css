@@ -42,3 +42,8 @@ header > ul > li:hover ul
 {
     opacity: 0;
 }
+
+.keyboardActivated .accelerator
+{
+    text-decoration: underline;
+}
