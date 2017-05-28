@@ -1,10 +1,11 @@
-﻿header > ul
+﻿#menubar
 {
+    user-select: none;
     list-style: none;
     padding: 0;
     margin: 0;
 }
-header > ul > li
+#menubar>li
 {
     display: block;
     float: left;
@@ -15,13 +16,18 @@ header > ul > li
     padding-bottom: 2px;
 }
 
-header > ul > li:hover
+#menubar>li:hover
+{
+    background-color: lightblue;
+}
+
+#menubar>li.selected
 {
     background-color: blue;
     color: white;
 }
 
-header > ul > li > ul
+#menubar>li>ul
 {
     background: yellow;
     position: absolute;

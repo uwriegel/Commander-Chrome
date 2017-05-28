@@ -7,61 +7,110 @@
 // NachRefresh Selektion erhalten
 // Conflicts: conflict liste in die Focusable anhängen
 // Rename auch von mehreren Dateien
-// Mehrfach-Umbenennen
-
-var Commander = (function ()
+class Commander
 {
-    var leftView: CommanderView
-    var rightView: CommanderView
+    constructor()
+    {
+        this.leftView = new CommanderView("leftView")
+        this.rightView = new CommanderView("rightView")
+        this.leftView.otherView = this.rightView
+        this.rightView.otherView = this.leftView
+        this.viewer = new Viewer()
+        this.leftView.setOnCurrentItemChanged(this.currentItemChanged.bind(this))
+        this.rightView.setOnCurrentItemChanged(this.currentItemChanged.bind(this))
 
-    document.addEventListener("DOMContentLoaded", function ready() {
-        document.removeEventListener("DOMContentLoaded", ready, false)
-        leftView = new CommanderView("leftView")
-        rightView = new CommanderView("rightView")
-        leftView.otherView = rightView
-        rightView.otherView = leftView
-        var viewer = Viewer()
+        this.focusedView = this.leftView
+        this.leftView.setOnFocus(() => this.focusedView = this.leftView)
+        this.rightView.setOnFocus(() =>this.focusedView = this.rightView)
 
-        leftView.setOnCurrentItemChanged(currentItemChanged)
-        rightView.setOnCurrentItemChanged(currentItemChanged)
+        this.footer = document.getElementById("footer")
 
-        var focusedView = leftView
-        leftView.setOnFocus(() => 
-        {
-            focusedView = leftView
-        })
-        rightView.setOnFocus(() =>
-        {
-            focusedView = rightView
-        })
+        this.leftView.initialize()
+        this.rightView.initialize()
+        this.leftView.focus()
 
-        var footer = document.getElementById("footer")
-
-        leftView.initialize()
-        rightView.initialize()
-        leftView.focus()
+        this.menu = new Menu()
 
         var gridElement = <HTMLDivElement>document.getElementById("grid")
         var viewerElement = document.getElementById("viewer")
         var grid = Grid(gridElement, document.getElementById("leftView"), document.getElementById("rightView"),
-            <HTMLDivElement>document.getElementById("grip"), () => focusedView.focus())
-        var vgrid = VerticalGrid(<HTMLDivElement>document.getElementById("vgrid"), gridElement, viewerElement,
-            <HTMLDivElement>document.getElementById("vgrip"), () => focusedView.focus())
+            <HTMLDivElement>document.getElementById("grip"), () => this.focusedView.focus())
+        this.vgrid = new VerticalGrid(<HTMLDivElement>document.getElementById("vgrid"), gridElement, viewerElement,
+            <HTMLDivElement>document.getElementById("vgrip"), () => this.focusedView.focus())
 
-        viewerElement.onclick = function () {
-            focusedView.focus()
+        viewerElement.onclick = () =>this.focusedView.focus()
+
+        this.initializeOnKeyDownHandler();
+    }
+
+    getCommanderView(id: string)
+    {
+        switch (id)
+        {
+            case "leftView":
+                return this.leftView
+            case "rightView":
+                return this.rightView
         }
+    }
 
-        document.onkeydown = function (evt) {
-            switch (evt.which) {
+    getFocused()
+    {
+        return this.focusedView
+    }
+
+    dragOver(x: number, y: number)
+    {
+        if (this.leftView.isMouseInTableView(x, y))
+            console.log(`Drag: ${x}, ${y}`);
+        if (this.rightView.isMouseInTableView(x, y))
+            console.log(`Drag: ${x}, ${y}`);
+    }
+
+    dragLeave()
+    {
+        this.leftView.dragLeave()
+        this.rightView.dragLeave()
+    }
+
+    drop(x: number, y: number, dragDropKind: DragDropKind, directory: string, items: Item[])
+    {
+        if (this.leftView.isMouseInTableView(x, y))
+        {
+            this.leftView.dragLeave()
+            this.rightView.drop(dragDropKind, directory, items)
+        }
+        if (this.rightView.isMouseInTableView(x, y))
+        {
+            this.rightView.dragLeave()
+            this.leftView.drop(dragDropKind, directory, items)
+        }
+    }
+
+    private initializeOnKeyDownHandler()
+    {
+        document.onkeydown = evt =>
+        {
+            switch (evt.which)
+            {
                 case 9: // TAB
-                    var toFocus = focusedView == leftView ? rightView : leftView
-                    toFocus.focus()
+                    if (!evt.shiftKey)
+                    {
+                        if (this.focusedView.isDirectoryInputFocused())
+                            this.focusedView.focus()
+                        else
+                        {
+                            var toFocus = this.focusedView == this.leftView ? this.rightView : this.leftView
+                            toFocus.focus()
+                        }
+                    }
+                    else
+                        this.focusedView.focusDirectoryInput()
                     break
                 case 72: // h
                     if (evt.ctrlKey)
                     {
-                        toggleHidden()
+                        this.toggleHidden()
                         break
                     }
                     else
@@ -70,8 +119,8 @@ var Commander = (function ()
                     if (evt.ctrlKey)
                     {
                         SavedViews.save({
-                            left: leftView.currentDirectory,
-                            right: rightView.currentDirectory
+                            left: this.leftView.currentDirectory,
+                            right: this.rightView.currentDirectory
                         })
                         break
                     }
@@ -80,12 +129,12 @@ var Commander = (function ()
                 case 112: // F1
                     if (evt.ctrlKey)
                     {
-                        leftView.changeDirectory("SavedViews")
-                        rightView.changeDirectory("SavedViews")
+                        this.leftView.changeDirectory("SavedViews")
+                        this.rightView.changeDirectory("SavedViews")
                     }
                     break
                 case 114: // F3
-                    vgrid.switchBottom()
+                    this.vgrid.switchBottom()
                     break
                 case 116: // F5
                     break
@@ -96,71 +145,43 @@ var Commander = (function ()
             }
             evt.preventDefault()
         }
+    }
 
-        function currentItemChanged(item, directory) {
-            if (item) {
-                var text = directory + '\\' + item.name
-                footer.textContent = text
-                viewer.selectionChanged(text)
-            }
-            else {
-                footer.textContent = "Nichts selektiert"
-                viewer.selectionChanged()
-            }
+    private currentItemChanged(item: Item, directory: string)
+    {
+        if (item)
+        {
+            var text = directory + '\\' + item.name
+            this.footer.textContent = text
+            this.viewer.selectionChanged(text)
         }
-    }, false)
-
-    function getCommanderView(id: string)
-    {
-        switch (id)
+        else
         {
-            case "leftView":
-                return leftView
-            case "rightView":
-                return rightView
-        }        
-    }
-
-    function dragOver(x: number, y: number)
-    {
-        if (leftView.isMouseInTableView(x, y))
-            console.log(`Drag: ${x}, ${y}`);
-        if (rightView.isMouseInTableView(x, y))
-            console.log(`Drag: ${x}, ${y}`);
-    }
-
-    function dragLeave()
-    {
-        leftView.dragLeave()
-        rightView.dragLeave()
-    }
-
-    function drop(x: number, y: number, dragDropKind: DragDropKind, directory: string, items: Item[])
-    {
-        if (leftView.isMouseInTableView(x, y))
-        {
-            leftView.dragLeave()
-            rightView.drop(dragDropKind, directory, items)
-        }
-        if (rightView.isMouseInTableView(x, y))
-        {
-            rightView.dragLeave()
-            leftView.drop(dragDropKind, directory, items)
+            this.footer.textContent = "Nichts selektiert"
+            this.viewer.selectionChanged()
         }
     }
 
-    async function toggleHidden()
+    private async toggleHidden()
     {
         await Connection.toggleHidden()
-        leftView.refresh()
-        rightView.refresh()
+        this.leftView.refresh()
+        this.rightView.refresh()
     }
 
-    return {
-        getCommanderView: getCommanderView,
-        dragOver: dragOver,
-        dragLeave: dragLeave,
-        drop: drop
-    }
-})()
+    private leftView: CommanderView
+    private rightView: CommanderView
+    private focusedView: CommanderView
+    private menu: Menu
+    private vgrid: VerticalGrid
+    private footer: HTMLElement
+    private viewer: Viewer
+}
 
+document.addEventListener("DOMContentLoaded", function ready()
+{
+    document.removeEventListener("DOMContentLoaded", ready, false)
+    commanderInstance = new Commander()
+}, false);
+
+var commanderInstance: Commander 

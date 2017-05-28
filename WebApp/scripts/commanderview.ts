@@ -283,6 +283,16 @@ class CommanderView
         this.tableView.focus()
     }
 
+    focusDirectoryInput()
+    {
+        this.commanderDirectory.focus()
+    }
+
+    isDirectoryInputFocused()
+    {
+        return this.commanderDirectory.contains(document.activeElement)
+    }
+
     setOnFocus(callback: () => void)
     {
         this.tableView.setOnFocus(() => callback())

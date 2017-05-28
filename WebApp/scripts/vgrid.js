@@ -6,34 +6,36 @@
  * @param gridSplitter der Teiler
  * @param onChanged Callback, wird aufgerufen wenn die Aufteilung geändert wurde
   */
-function VerticalGrid(gridContainer, topView, bottomView, gridSplitter, onChanged) {
-    var grid = Grid(gridContainer, topView, bottomView, gridSplitter, (firstPercent) => {
-        topPercent = firstPercent;
-        localStorage["vgrid"] = firstPercent;
-        onChanged();
-    }, true);
-    var topPercent = localStorage["vgrid"];
-    if (!topPercent)
-        topPercent = 70;
-    grid.setSize(topPercent);
-    switchBottom();
+class VerticalGrid {
+    constructor(gridContainer, topView, bottomView, gridSplitter, onChanged) {
+        this.topView = topView;
+        this.bottomView = bottomView;
+        this.gridSplitter = gridSplitter;
+        var grid = Grid(gridContainer, topView, bottomView, gridSplitter, (firstPercent) => {
+            this.topPercent = firstPercent;
+            localStorage["vgrid"] = firstPercent;
+            onChanged();
+        }, true);
+        this.topPercent = localStorage["vgrid"];
+        if (!this.topPercent)
+            this.topPercent = 70;
+        grid.setSize(this.topPercent);
+        this.switchBottom();
+    }
     /**
      * Ein/Ausblenden der unteren Ansicht
      */
-    function switchBottom() {
-        if (bottomView.classList.contains("displayNone")) {
-            bottomView.classList.remove("displayNone");
-            gridSplitter.classList.remove("displayNone");
-            topView.style.height = `calc(${topPercent}% - 3px)`;
+    switchBottom() {
+        if (this.bottomView.classList.contains("displayNone")) {
+            this.bottomView.classList.remove("displayNone");
+            this.gridSplitter.classList.remove("displayNone");
+            this.topView.style.height = `calc(${this.topPercent}% - 3px)`;
         }
         else {
-            bottomView.classList.add("displayNone");
-            gridSplitter.classList.add("displayNone");
-            topView.style.height = "100%";
+            this.bottomView.classList.add("displayNone");
+            this.gridSplitter.classList.add("displayNone");
+            this.topView.style.height = "100%";
         }
     }
-    return {
-        switchBottom: switchBottom
-    };
 }
 //# sourceMappingURL=vgrid.js.map

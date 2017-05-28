@@ -19,15 +19,15 @@ var Connection = (function ()
         if (evt.serviceItems) 
             serviceItemsCallbacks[evt.id](evt.serviceItems)
         if (evt.refresh)
-            Commander.getCommanderView(evt.id).refresh()
+            commanderInstance.getCommanderView(evt.id).refresh()
         if (evt.dragOver)
-            Commander.dragOver(evt.dragOver.x, evt.dragOver.y)
+            commanderInstance.dragOver(evt.dragOver.x, evt.dragOver.y)
         if (evt.dragLeave)
-            Commander.dragLeave()
+            commanderInstance.dragLeave()
         if (evt.drop)
-            Commander.drop(evt.drop.x, evt.drop.y, evt.drop.dragDropKind, evt.drop.directory, evt.drop.items);
+            commanderInstance.drop(evt.drop.x, evt.drop.y, evt.drop.dragDropKind, evt.drop.directory, evt.drop.items);
         if (evt.dragFinished)
-            Commander.getCommanderView(evt.dragFinished.commanderId).dragFinished(evt.dragFinished.refresh)
+            commanderInstance.getCommanderView(evt.dragFinished.commanderId).dragFinished(evt.dragFinished.refresh)
     }
 
     /**

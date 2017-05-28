@@ -7,43 +7,51 @@
  * @param gridSplitter der Teiler
  * @param onChanged Callback, wird aufgerufen wenn die Aufteilung geändert wurde
   */
-function VerticalGrid(gridContainer: HTMLDivElement, topView: HTMLElement, bottomView: HTMLElement,
-    gridSplitter: HTMLDivElement, onChanged: () => void)
+class VerticalGrid
 {
-    var grid = Grid(gridContainer, topView, bottomView, gridSplitter, (firstPercent) =>
+    constructor(gridContainer: HTMLDivElement, topView: HTMLElement, bottomView: HTMLElement, gridSplitter: HTMLDivElement, onChanged: ()=>void)
     {
-        topPercent = firstPercent
-        localStorage["vgrid"] = firstPercent
-        onChanged()
-    }, true)
+        this.topView = topView
+        this.bottomView = bottomView
+        this.gridSplitter = gridSplitter
 
-    var topPercent = localStorage["vgrid"]
-    if (!topPercent)
-        topPercent = 70
-    grid.setSize(topPercent)    
-    switchBottom()
+        var grid = Grid(gridContainer, topView, bottomView, gridSplitter, (firstPercent) =>
+        {
+            this.topPercent = firstPercent
+            localStorage["vgrid"] = firstPercent
+            onChanged()
+        }, true)
+
+        this.topPercent = localStorage["vgrid"]
+        if (!this.topPercent)
+            this.topPercent = 70
+        grid.setSize(this.topPercent)
+        this.switchBottom()
+    }
 
     /**
      * Ein/Ausblenden der unteren Ansicht
      */
-    function switchBottom()
+    switchBottom()
     {
-        if (bottomView.classList.contains("displayNone"))
+        if (this.bottomView.classList.contains("displayNone"))
         {
-            bottomView.classList.remove("displayNone")
-            gridSplitter.classList.remove("displayNone")
-            topView.style.height = `calc(${topPercent}% - 3px)`
+            this.bottomView.classList.remove("displayNone")
+            this.gridSplitter.classList.remove("displayNone")
+            this.topView.style.height = `calc(${this.topPercent}% - 3px)`
         }
         else
         {
-            bottomView.classList.add("displayNone")
-            gridSplitter.classList.add("displayNone")
-            topView.style.height = "100%"
+            this.bottomView.classList.add("displayNone")
+            this.gridSplitter.classList.add("displayNone")
+            this.topView.style.height = "100%"
         }
     }
 
-    return {
-        switchBottom: switchBottom
-    }
+    private bottomView: HTMLElement
+    private topView: HTMLElement
+    private gridSplitter: HTMLDivElement
+    private topPercent: number
 }
+    
 

@@ -2,85 +2,94 @@
 /**
  * Anzeige der Dateien unten in der Ansicht
  */
-function Viewer() {
-    
-    var viewer = <HTMLElement>document.getElementById("viewer")
-    var img = <HTMLImageElement>document.getElementById("viewerImg")
-    var video = <HTMLVideoElement>document.getElementById("viewerVideo")
-    var frame = <HTMLIFrameElement>document.getElementById("viewerFrame")
-    var lastFile
+class Viewer
+{
+    constructor()
+    {
+        this.viewer = <HTMLElement>document.getElementById("viewer")
+        this.img = <HTMLImageElement>document.getElementById("viewerImg")
+        this.video = <HTMLVideoElement>document.getElementById("viewerVideo")
+        this.frame = <HTMLIFrameElement>document.getElementById("viewerFrame")
+    }
 
-    var timer = null
-    function selectionChanged(item?) {
-        if (viewer.classList.contains("displayNone")) {
-            if (lastFile) {
-                video.src = null
-                frame.src = null
-                img.src = null
-                lastFile = null
+    selectionChanged(item?: string)
+    {
+        if (this.viewer.classList.contains("displayNone"))
+        {
+            if (this.lastFile)
+            {
+                this.video.src = null
+                this.frame.src = null
+                this.img.src = null
+                this.lastFile = null
             }
             return
         }
-            
-        if (lastFile == item)
-            return
-        lastFile = item;
-        if (timer)
-            clearTimeout(timer)
-        timer = null
 
-        timer = setTimeout(function () {
+        if (this.lastFile == item)
+            return
+        this.lastFile = item;
+        if (this.timer)
+            clearTimeout(this.timer)
+
+        this.timer = setTimeout(function ()
+        {
             if (item)
             {
                 //let itemCoded = `/Commander/File?path=${btoa(item)}`
                 let itemCoded = `/Commander/File?path=${btoa(encodeURIComponent(item))}`
-                
+
                 let itemcheck = item.toLowerCase()
                 if (itemcheck.endsWith(".mp4") || itemcheck.endsWith(".mkv") || itemcheck.endsWith(".mp3") || itemcheck.endsWith(".wav"))
                 {
-                    img.classList.add("displayNone")
-                    frame.classList.add("displayNone")
-                    video.classList.remove("displayNone")
-                    if (video.src != itemCoded)
-                        video.src = itemCoded
+                    this.img.classList.add("displayNone")
+                    this.frame.classList.add("displayNone")
+                    this.video.classList.remove("displayNone")
+                    if (this.video.src != itemCoded)
+                        this.video.src = itemCoded
                 }
                 else if (itemcheck.endsWith(".jpg") || itemcheck.endsWith(".png") || itemcheck.endsWith(".ico"))
                 {
-                    img.classList.remove("displayNone")
-                    img.src = itemCoded
-                    frame.classList.add("displayNone")
-                    video.classList.add("displayNone")
-                    video.pause()
+                    this.img.classList.remove("displayNone")
+                    this.img.src = itemCoded
+                    this.frame.classList.add("displayNone")
+                    this.video.classList.add("displayNone")
+                    this.video.pause()
                 }
                 else if (itemcheck.endsWith(".pdf") || itemcheck.endsWith("cs") || itemcheck.endsWith("html") || itemcheck.endsWith("xml")
                     || itemcheck.endsWith("java") || itemcheck.endsWith("xaml") || itemcheck.endsWith("java")
                     || itemcheck.endsWith("js") || itemcheck.endsWith("css"))
                 {
-                    img.classList.add("displayNone")
-                    video.classList.add("displayNone")
-                    video.pause()
-                    frame.classList.remove("displayNone")
-                    frame.src = itemCoded
+                    this.img.classList.add("displayNone")
+                    this.video.classList.add("displayNone")
+                    this.video.pause()
+                    this.frame.classList.remove("displayNone")
+                    this.frame.src = itemCoded
                 }
                 else
                 {
-                    img.classList.add("displayNone")
-                    video.classList.add("displayNone")
-                    video.pause()
-                    frame.classList.add("displayNone")
+                    this.img.classList.add("displayNone")
+                    this.video.classList.add("displayNone")
+                    this.video.pause()
+                    this.frame.classList.add("displayNone")
                 }
             }
             else
             {
-                img.classList.add("displayNone")
-                video.classList.add("displayNone")
-                video.pause()
-                frame.classList.add("displayNone")
+                this.img.classList.add("displayNone")
+                this.video.classList.add("displayNone")
+                this.video.pause()
+                this.frame.classList.add("displayNone")
             }
         }, 50)
     }
 
-    return {
-        selectionChanged: selectionChanged
-    }
+    private viewer
+    private img
+    private video
+    private frame
+    private lastFile: string
+    private timer: number
 }
+    
+
