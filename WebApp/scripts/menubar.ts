@@ -55,13 +55,12 @@ class MenuBar
                 let acc = accs.find(n => n.innerText.toLowerCase() == evt.key)
                 if (acc)
                 {
+                    this.acceleratorInitiated = true
                     let li = <HTMLLIElement>acc.parentElement
                     this.setActive()
                     this.clearSelection()
                     this.focusLi(li)
                 }
-                else
-                    this.closeOnAltKeyUp = true
             }
             
             if (!this.isActive)
@@ -70,9 +69,6 @@ class MenuBar
             switch (evt.which)
             {
                 case 9: // TAB
-                    this.close()
-                    break;
-                case 18: // Alt
                     this.close()
                     break;
                 case 27: // ESC
@@ -109,14 +105,17 @@ class MenuBar
             switch (evt.which)
             {
                 case 18: // alt
-                    if (!this.hasFocus && !this.closeOnAltKeyUp)
+                    if (!this.hasFocus)
                     {
                         this.clearSelection()
                         this.setActive()
                         let li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li:first-Child")
                         this.focusLi(li)
                     }
-                    this.closeOnAltKeyUp = false
+                    else if (this.acceleratorInitiated)
+                        this.acceleratorInitiated = false
+                    else
+                        this.close()
                     break;
             }
         }
@@ -156,6 +155,7 @@ class MenuBar
         this.clearSelection()
         this.hasFocus = false
         this.isActive = false
+        this.acceleratorInitiated = false
         this.focusedView.focus()
         let lis = <HTMLLIElement[]>Array.from(this.menuBar.querySelectorAll("#menubar>li"))
         lis.forEach(n => n.onmouseover = null)
@@ -166,5 +166,5 @@ class MenuBar
     private focusedView: CommanderView
     private isActive: boolean
     private keyboardActivated: boolean
-    private closeOnAltKeyUp: boolean
+    private acceleratorInitiated: boolean
 }

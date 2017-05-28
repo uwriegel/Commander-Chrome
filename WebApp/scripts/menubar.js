@@ -37,21 +37,17 @@ class MenuBar {
                 let accs = Array.from(this.menuBar.querySelectorAll(".keyboardActivated .accelerator"));
                 let acc = accs.find(n => n.innerText.toLowerCase() == evt.key);
                 if (acc) {
+                    this.acceleratorInitiated = true;
                     let li = acc.parentElement;
                     this.setActive();
                     this.clearSelection();
                     this.focusLi(li);
                 }
-                else
-                    this.closeOnAltKeyUp = true;
             }
             if (!this.isActive)
                 return;
             switch (evt.which) {
                 case 9:
-                    this.close();
-                    break;
-                case 18:
                     this.close();
                     break;
                 case 27:
@@ -85,13 +81,16 @@ class MenuBar {
         document.onkeyup = evt => {
             switch (evt.which) {
                 case 18:
-                    if (!this.hasFocus && !this.closeOnAltKeyUp) {
+                    if (!this.hasFocus) {
                         this.clearSelection();
                         this.setActive();
                         let li = this.menuBar.querySelector("#menubar>li:first-Child");
                         this.focusLi(li);
                     }
-                    this.closeOnAltKeyUp = false;
+                    else if (this.acceleratorInitiated)
+                        this.acceleratorInitiated = false;
+                    else
+                        this.close();
                     break;
             }
         };
@@ -121,6 +120,7 @@ class MenuBar {
         this.clearSelection();
         this.hasFocus = false;
         this.isActive = false;
+        this.acceleratorInitiated = false;
         this.focusedView.focus();
         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
         lis.forEach(n => n.onmouseover = null);
