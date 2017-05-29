@@ -1,114 +1,125 @@
-class MenuBar {
-    constructor() {
+var MenuBar = (function () {
+    function MenuBar() {
+        var _this = this;
         this.menuBar = document.getElementById("menubar");
-        this.menuBar.addEventListener("focusout", evt => {
-            if (!this.menuBar.contains(evt.relatedTarget))
-                this.close();
+        this.menuBar.addEventListener("focusout", function (evt) {
+            if (!_this.menuBar.contains(evt.relatedTarget))
+                _this.close();
         });
         this.initializeMouseHandler();
         this.initializeKeyHandler();
     }
-    initializeMouseHandler() {
-        this.menuBar.onmousedown = evt => {
+    MenuBar.prototype.initializeMouseHandler = function () {
+        var _this = this;
+        this.menuBar.onmousedown = function (evt) {
             var li = evt.target.closest("li");
             var selected = false;
             if (li.classList.contains("selected"))
                 selected = true;
-            if (!this.isActive)
-                this.setActive();
-            this.clearSelection();
+            if (!_this.isActive)
+                _this.setActive();
+            _this.clearSelection();
             if (!selected)
-                this.focusLi(li);
+                _this.focusLi(li);
             else {
-                this.close();
+                _this.close();
                 evt.stopPropagation();
                 evt.preventDefault();
             }
         };
-    }
-    initializeKeyHandler() {
-        document.addEventListener("keydown", evt => {
-            if (!this.isActive && evt.which == 18) {
-                this.menuBar.classList.add("keyboardActivated");
-                this.keyboardActivated = true;
+    };
+    MenuBar.prototype.initializeKeyHandler = function () {
+        var _this = this;
+        document.addEventListener("keydown", function (evt) {
+            if (!_this.isActive && evt.which == 18) {
+                _this.menuBar.classList.add("keyboardActivated");
+                _this.keyboardActivated = true;
             }
-            if (this.keyboardActivated && evt.which != 18) {
-                let accs = Array.from(this.menuBar.querySelectorAll(".keyboardActivated .accelerator"));
-                let acc = accs.find(n => n.innerText.toLowerCase() == evt.key);
+            if (!_this.isActive && _this.keyboardActivated && evt.which != 18) {
+                var accs = Array.from(_this.menuBar.querySelectorAll(".keyboardActivated .accelerator"));
+                var acc = accs.find(function (n) { return n.innerText.toLowerCase() == evt.key; });
                 if (acc) {
-                    this.acceleratorInitiated = true;
-                    let li = acc.parentElement;
-                    this.setActive();
-                    this.clearSelection();
-                    this.focusLi(li);
+                    _this.acceleratorInitiated = true;
+                    var li = acc.parentElement;
+                    _this.setActive();
+                    _this.clearSelection();
+                    _this.focusLi(li);
+                    evt.stopPropagation();
+                    evt.preventDefault();
+                    return;
                 }
+                else
+                    _this.close();
             }
-            if (!this.isActive)
+            if (!_this.isActive)
                 return;
             switch (evt.which) {
                 case 9:
-                    this.close();
+                    _this.close();
+                    break;
+                case 18:
                     break;
                 case 27:
-                    this.close();
+                    _this.close();
                     break;
                 case 37:
                     {
-                        let li = this.menuBar.querySelector("#menubar>li.selected");
-                        let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
-                        var i = (lis).findIndex(n => n == li);
-                        li = lis[i - 1];
-                        if (!li)
-                            li = lis[lis.length - 1];
-                        this.clearSelection();
-                        this.focusLi(li);
+                        var li_1 = _this.menuBar.querySelector("#menubar>li.selected");
+                        var lis = Array.from(_this.menuBar.querySelectorAll("#menubar>li"));
+                        var i = (lis).findIndex(function (n) { return n == li_1; });
+                        li_1 = lis[i - 1];
+                        if (!li_1)
+                            li_1 = lis[lis.length - 1];
+                        _this.clearSelection();
+                        _this.focusLi(li_1);
                     }
                     break;
                 case 39:
                     {
-                        let li = this.menuBar.querySelector("#menubar>li.selected + li");
+                        var li = _this.menuBar.querySelector("#menubar>li.selected + li");
                         if (!li)
-                            li = this.menuBar.querySelector("#menubar>li");
-                        this.clearSelection();
-                        this.focusLi(li);
+                            li = _this.menuBar.querySelector("#menubar>li");
+                        _this.clearSelection();
+                        _this.focusLi(li);
                     }
                     break;
             }
             evt.stopPropagation();
             evt.preventDefault();
         }, true);
-        document.onkeyup = evt => {
+        document.onkeyup = function (evt) {
             switch (evt.which) {
                 case 18:
-                    if (!this.hasFocus) {
-                        this.clearSelection();
-                        this.setActive();
-                        let li = this.menuBar.querySelector("#menubar>li:first-Child");
-                        this.focusLi(li);
+                    if (!_this.hasFocus && _this.keyboardActivated) {
+                        _this.clearSelection();
+                        _this.setActive();
+                        var li = _this.menuBar.querySelector("#menubar>li:first-Child");
+                        _this.focusLi(li);
                     }
-                    else if (this.acceleratorInitiated)
-                        this.acceleratorInitiated = false;
+                    else if (_this.acceleratorInitiated)
+                        _this.acceleratorInitiated = false;
                     else
-                        this.close();
+                        _this.close();
                     break;
             }
         };
-    }
-    setActive() {
+    };
+    MenuBar.prototype.setActive = function () {
+        var _this = this;
         this.focusedView = commanderInstance.getFocused();
-        let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
-        lis.forEach(n => {
-            n.onmouseover = evt => {
-                this.clearSelection();
-                this.focusLi(evt.currentTarget);
+        var lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
+        lis.forEach(function (n) {
+            n.onmouseover = function (evt) {
+                _this.clearSelection();
+                _this.focusLi(evt.currentTarget);
             };
         });
         this.hasFocus = true;
-    }
-    clearSelection() {
-        Array.from(this.menuBar.querySelectorAll("#menubar>li")).forEach(n => n.classList.remove("selected"));
-    }
-    focusLi(li) {
+    };
+    MenuBar.prototype.clearSelection = function () {
+        Array.from(this.menuBar.querySelectorAll("#menubar>li")).forEach(function (n) { return n.classList.remove("selected"); });
+    };
+    MenuBar.prototype.focusLi = function (li) {
         li.classList.add("selected");
         li.focus();
         this.isActive = true;
@@ -124,8 +135,8 @@ class MenuBar {
                 this.openSubMenu(li.offsetLeft, "submenu3");
                 break;
         }
-    }
-    close() {
+    };
+    MenuBar.prototype.close = function () {
         this.closeSubMenus();
         this.menuBar.classList.remove("keyboardActivated");
         this.keyboardActivated = false;
@@ -134,17 +145,18 @@ class MenuBar {
         this.isActive = false;
         this.acceleratorInitiated = false;
         this.focusedView.focus();
-        let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
-        lis.forEach(n => n.onmouseover = null);
-    }
-    openSubMenu(offsetLeft, menuId) {
-        let submenu = document.getElementById(menuId);
-        submenu.style.left = `${offsetLeft}px`;
+        var lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
+        lis.forEach(function (n) { return n.onmouseover = null; });
+    };
+    MenuBar.prototype.openSubMenu = function (offsetLeft, menuId) {
+        var submenu = document.getElementById(menuId);
+        submenu.style.left = offsetLeft + "px";
         submenu.classList.remove("hidden");
-    }
-    closeSubMenus() {
-        let subs = Array.from(document.getElementsByClassName("submenu"));
-        subs.forEach(n => n.classList.add("hidden"));
-    }
-}
+    };
+    MenuBar.prototype.closeSubMenus = function () {
+        var subs = Array.from(document.getElementsByClassName("submenu"));
+        subs.forEach(function (n) { return n.classList.add("hidden"); });
+    };
+    return MenuBar;
+}());
 //# sourceMappingURL=menubar.js.map

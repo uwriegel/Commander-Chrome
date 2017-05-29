@@ -48,7 +48,7 @@ class MenuBar
                 this.keyboardActivated = true;
             }
 
-            if (this.keyboardActivated && evt.which != 18) // Alt
+            if (!this.isActive && this.keyboardActivated && evt.which != 18) // Alt
             {
                 let accs = <HTMLSpanElement[]>Array.from(this.menuBar.querySelectorAll(".keyboardActivated .accelerator"))
                 let acc = accs.find(n => n.innerText.toLowerCase() == evt.key)
@@ -59,7 +59,12 @@ class MenuBar
                     this.setActive()
                     this.clearSelection()
                     this.focusLi(li)
+                    evt.stopPropagation()
+                    evt.preventDefault()
+                    return;
                 }
+                else
+                    this.close()
             }
             
             if (!this.isActive)
@@ -69,10 +74,12 @@ class MenuBar
             {
                 case 9: // TAB
                     this.close()
-                    break;
+                    break
+                case 18:
+                    break
                 case 27: // ESC
                     this.close()
-                    break;
+                    break
                 case 37: // <-
                     {
                         let li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li.selected")
@@ -84,7 +91,7 @@ class MenuBar
                         this.clearSelection()
                         this.focusLi(li)
                     }
-                    break;
+                    break
                 case 39:// ->
                     {
                         let li = <HTMLLIElement>this.menuBar.querySelector("#menubar>li.selected + li")
@@ -104,7 +111,7 @@ class MenuBar
             switch (evt.which)
             {
                 case 18: // alt
-                    if (!this.hasFocus)
+                    if (!this.hasFocus && this.keyboardActivated)
                     {
                         this.clearSelection()
                         this.setActive()
@@ -196,4 +203,5 @@ class MenuBar
     private isActive: boolean
     private keyboardActivated: boolean
     private acceleratorInitiated: boolean
+    private altPressed: boolean
 }
