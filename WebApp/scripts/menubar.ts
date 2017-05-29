@@ -1,5 +1,4 @@
-﻿// TODO: TOGGLE mit Alt funktioniert nicht
-
+﻿
 class MenuBar
 {
     constructor()
@@ -146,10 +145,26 @@ class MenuBar
         li.classList.add("selected")
         li.focus()
         this.isActive = true
+
+        this.closeSubMenus()
+
+        switch (li.id)
+        {
+            case "menubar1":
+                this.openSubMenu(li.offsetLeft, "submenu1")
+                break;
+            case "menubar2":
+                this.openSubMenu(li.offsetLeft, "submenu2")
+                break;
+            case "menubar3":
+                this.openSubMenu(li.offsetLeft, "submenu3")
+                break;
+        }
     }
 
     private close()
     {
+        this.closeSubMenus()
         this.menuBar.classList.remove("keyboardActivated")
         this.keyboardActivated = false;
         this.clearSelection()
@@ -159,6 +174,20 @@ class MenuBar
         this.focusedView.focus()
         let lis = <HTMLLIElement[]>Array.from(this.menuBar.querySelectorAll("#menubar>li"))
         lis.forEach(n => n.onmouseover = null)
+    }
+
+    private openSubMenu(offsetLeft: number, menuId: string)
+    {
+        let submenu = document.getElementById(menuId)
+        submenu.style.left = `${offsetLeft}px`
+        submenu.classList.remove("hidden")
+
+    }
+
+    private closeSubMenus()
+    {
+        let subs = Array.from(document.getElementsByClassName("submenu"))
+        subs.forEach(n => n.classList.add("hidden"))
     }
 
     private menuBar: HTMLUListElement

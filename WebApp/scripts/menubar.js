@@ -1,4 +1,3 @@
-// TODO: TOGGLE mit Alt funktioniert nicht
 class MenuBar {
     constructor() {
         this.menuBar = document.getElementById("menubar");
@@ -113,8 +112,21 @@ class MenuBar {
         li.classList.add("selected");
         li.focus();
         this.isActive = true;
+        this.closeSubMenus();
+        switch (li.id) {
+            case "menubar1":
+                this.openSubMenu(li.offsetLeft, "submenu1");
+                break;
+            case "menubar2":
+                this.openSubMenu(li.offsetLeft, "submenu2");
+                break;
+            case "menubar3":
+                this.openSubMenu(li.offsetLeft, "submenu3");
+                break;
+        }
     }
     close() {
+        this.closeSubMenus();
         this.menuBar.classList.remove("keyboardActivated");
         this.keyboardActivated = false;
         this.clearSelection();
@@ -124,6 +136,15 @@ class MenuBar {
         this.focusedView.focus();
         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
         lis.forEach(n => n.onmouseover = null);
+    }
+    openSubMenu(offsetLeft, menuId) {
+        let submenu = document.getElementById(menuId);
+        submenu.style.left = `${offsetLeft}px`;
+        submenu.classList.remove("hidden");
+    }
+    closeSubMenus() {
+        let subs = Array.from(document.getElementsByClassName("submenu"));
+        subs.forEach(n => n.classList.add("hidden"));
     }
 }
 //# sourceMappingURL=menubar.js.map

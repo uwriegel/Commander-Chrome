@@ -6,7 +6,7 @@
     padding: 0;
     margin: 0;
 }
-#menubar > li
+#menubar>li
 {
     cursor: default;
     display: block;
@@ -16,6 +16,7 @@
     padding-top: 2px;
     padding-right: 5px;
     padding-bottom: 2px;
+    transition: background-color ease-out 0.3s, color ease-out 0.1s;
 }
 
 #menubar>li:hover
@@ -29,15 +30,31 @@
     color: white;
 }
 
-#menubar>li>ul
+.submenu
 {
-    background: yellow;
     position: absolute;
-    z-index: 2000;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    opacity: 0;
+    z-index: 3000;
+    top: 20px;
+    margin: 0px;
+    padding: 0px;
+    border-spacing: 0px;
+}
+
+.submenu tr
+{
+    margin: 5px;
+    background-color: white;
+    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.21);
+}
+
+.submenu tr td
+{
+    padding: 5px;
+}
+
+.submenu.hidden
+{
+    display: none;
 }
 
 header > ul > li:hover ul
