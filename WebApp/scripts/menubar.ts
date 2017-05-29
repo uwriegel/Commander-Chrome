@@ -48,13 +48,14 @@ class MenuBar
                 this.keyboardActivated = true;
             }
 
-            if (!this.isActive && this.keyboardActivated && evt.which != 18) // Alt
+            if (this.keyboardActivated && evt.which != 18) // Alt
             {
                 let accs = <HTMLSpanElement[]>Array.from(this.menuBar.querySelectorAll(".keyboardActivated .accelerator"))
                 let acc = accs.find(n => n.innerText.toLowerCase() == evt.key)
                 if (acc)
                 {
-                    this.acceleratorInitiated = true
+                    if (!this.isActive)
+                        this.acceleratorInitiated = true
                     let li = <HTMLLIElement>acc.parentElement
                     this.setActive()
                     this.clearSelection()
@@ -63,7 +64,7 @@ class MenuBar
                     evt.preventDefault()
                     return;
                 }
-                else
+                else if(!this.isActive)
                     this.close()
             }
             
@@ -165,6 +166,9 @@ class MenuBar
                 break;
             case "menubar3":
                 this.openSubMenu(li.offsetLeft, "submenu3")
+                break;
+            case "menubar4":
+                this.openSubMenu(li.offsetLeft, "submenu4")
                 break;
         }
     }

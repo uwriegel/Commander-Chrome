@@ -35,11 +35,12 @@ var MenuBar = (function () {
                 _this.menuBar.classList.add("keyboardActivated");
                 _this.keyboardActivated = true;
             }
-            if (!_this.isActive && _this.keyboardActivated && evt.which != 18) {
+            if (_this.keyboardActivated && evt.which != 18) {
                 var accs = Array.from(_this.menuBar.querySelectorAll(".keyboardActivated .accelerator"));
                 var acc = accs.find(function (n) { return n.innerText.toLowerCase() == evt.key; });
                 if (acc) {
-                    _this.acceleratorInitiated = true;
+                    if (!_this.isActive)
+                        _this.acceleratorInitiated = true;
                     var li = acc.parentElement;
                     _this.setActive();
                     _this.clearSelection();
@@ -48,7 +49,7 @@ var MenuBar = (function () {
                     evt.preventDefault();
                     return;
                 }
-                else
+                else if (!_this.isActive)
                     _this.close();
             }
             if (!_this.isActive)
@@ -133,6 +134,9 @@ var MenuBar = (function () {
                 break;
             case "menubar3":
                 this.openSubMenu(li.offsetLeft, "submenu3");
+                break;
+            case "menubar4":
+                this.openSubMenu(li.offsetLeft, "submenu4");
                 break;
         }
     };
