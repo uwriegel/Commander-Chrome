@@ -42,14 +42,44 @@
 
 .submenu tr
 {
+    cursor: default;
     margin: 5px;
     background-color: white;
     box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.21);
 }
 
+.submenu tr:hover
+{
+    background-color: rgb(235,235,255);
+}
+
+.submenu tr.separator:hover
+{
+    background-color: white
+}
+
+.separator>td>div
+{
+    border-color: lightgray;
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+
 .submenu tr td
 {
     padding: 5px;
+}
+
+.submenu tr td:first-child
+{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.submenu tr td:last-child
+{
+    padding-right: 20px;
+    text-align: right
 }
 
 .submenu.hidden

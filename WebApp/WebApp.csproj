@@ -60,6 +60,7 @@
     <TypeScriptCompile Include="scripts\itemssorter.ts" />
     <TypeScriptCompile Include="scripts\itemsviewmodel.ts" />
     <TypeScriptCompile Include="scripts\savedviews.ts" />
+    <TypeScriptCompile Include="scripts\submenu.ts" />
     <TypeScriptCompile Include="TypescriptDefinitions\native.d.ts" />
     <TypeScriptCompile Include="scripts\scrollbar.ts" />
     <TypeScriptCompile Include="scripts\tableview.ts" />

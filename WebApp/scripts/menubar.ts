@@ -1,5 +1,4 @@
-﻿
-class MenuBar
+﻿class MenuBar
 {
     constructor()
     {
