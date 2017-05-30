@@ -16,7 +16,11 @@
     padding-top: 2px;
     padding-right: 5px;
     padding-bottom: 2px;
-    transition: background-color ease-out 0.3s, color ease-out 0.1s;
+}
+
+#menubar>li:focus
+{
+    outline: none;
 }
 
 #menubar>li:hover

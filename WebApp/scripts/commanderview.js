@@ -99,8 +99,13 @@ class CommanderView {
         this.tableView.setOnSelectedCallback((i, o, sp) => this.processItem(i, o, sp));
         this.tableView.setOnToggleSelection(i => this.itemsSorter.toggleSelection(i));
         this.tableView.setOnDragCallback(() => {
-            var selectedItems = this.itemsModel.getSelectedItems();
+            var selectedItems = this.getSelectedItems();
             if (selectedItems && selectedItems.length > 0) {
+                var currentItem = this.itemsSorter.getItem(this.tableView.getCurrentItemIndex());
+                if (!selectedItems.find(n => n == currentItem)) {
+                    this.itemsSorter.toggleSelection(this.tableView.getCurrentItemIndex());
+                    selectedItems = this.getSelectedItems();
+                }
                 this.dragStarted = true;
                 Connection.startDrag(this.id, this.currentDirectory, selectedItems);
             }
