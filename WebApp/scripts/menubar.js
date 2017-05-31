@@ -1,8 +1,11 @@
+// TODO: Separatoren nicht fokussierbar machen
+// TODO: Beim Focusout im Submenu Menu schließen
+// TODO: Wenn Submenu offen, und man geht mit der Maus weiter, Submenu schließen, sodass wieder auf Maussteuerung umgfeschaltet wird
 class MenuBar {
     constructor() {
         this.menuBar = document.getElementById("menubar");
         this.menuBar.addEventListener("focusout", evt => {
-            if (!this.menuBar.contains(evt.relatedTarget))
+            if (!this.subMenuOpened && !this.menuBar.contains(evt.relatedTarget))
                 this.close();
         });
         this.initializeMouseHandler();
@@ -16,6 +19,7 @@ class MenuBar {
                 selected = true;
             if (!this.isActive)
                 this.setActive();
+            this.subMenuOpened = true;
             this.clearSelection();
             if (!selected)
                 this.focusLi(li);
@@ -40,6 +44,7 @@ class MenuBar {
                         this.acceleratorInitiated = true;
                     let li = acc.parentElement;
                     this.setActive();
+                    this.setSubMenuOpened();
                     this.clearSelection();
                     this.focusLi(li);
                     evt.stopPropagation();
@@ -72,6 +77,10 @@ class MenuBar {
                         this.focusLi(li);
                     }
                     break;
+                case 38:
+                    if (this.openedSubMenu)
+                        this.openedSubMenu.onKeyUp();
+                    break;
                 case 39:
                     {
                         let li = this.menuBar.querySelector("#menubar>li.selected + li");
@@ -79,6 +88,18 @@ class MenuBar {
                             li = this.menuBar.querySelector("#menubar>li");
                         this.clearSelection();
                         this.focusLi(li);
+                    }
+                    break;
+                case 40:
+                    {
+                        if (evt.target.nodeName == "LI") {
+                            console.log("Schwein");
+                            this.setSubMenuOpened();
+                            let li = this.menuBar.querySelector("#menubar>li.selected");
+                            this.focusLi(li);
+                        }
+                        else if (this.openedSubMenu)
+                            this.openedSubMenu.onKeyDown();
                     }
                     break;
             }
@@ -113,6 +134,14 @@ class MenuBar {
         });
         this.hasFocus = true;
     }
+    setSubMenuOpened() {
+        this.menuBar.classList.add("subMenuOpened");
+        this.subMenuOpened = true;
+    }
+    setSubMenuClosed() {
+        this.menuBar.classList.remove("subMenuOpened");
+        this.subMenuOpened = false;
+    }
     clearSelection() {
         Array.from(this.menuBar.querySelectorAll("#menubar>li")).forEach(n => n.classList.remove("selected"));
     }
@@ -120,21 +149,25 @@ class MenuBar {
         li.classList.add("selected");
         li.focus();
         this.isActive = true;
+        if (!this.subMenuOpened)
+            return;
         this.closeSubMenus();
+        var subMenuId;
         switch (li.id) {
             case "menubar1":
-                this.openSubMenu(li.offsetLeft, "submenu1");
+                subMenuId = "submenu1";
                 break;
             case "menubar2":
-                this.openSubMenu(li.offsetLeft, "submenu2");
+                subMenuId = "submenu2";
                 break;
             case "menubar3":
-                this.openSubMenu(li.offsetLeft, "submenu3");
+                subMenuId = "submenu3";
                 break;
             case "menubar4":
-                this.openSubMenu(li.offsetLeft, "submenu4");
+                subMenuId = "submenu3";
                 break;
         }
+        this.openSubMenu(li.offsetLeft, subMenuId);
     }
     close() {
         this.closeSubMenus();
@@ -145,6 +178,9 @@ class MenuBar {
         this.isActive = false;
         this.acceleratorInitiated = false;
         this.focusedView.focus();
+        this.setSubMenuClosed();
+        this.openedSubMenu.close();
+        this.openedSubMenu = null;
         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
         lis.forEach(n => n.onmouseover = null);
     }
@@ -152,6 +188,11 @@ class MenuBar {
         let submenu = document.getElementById(menuId);
         submenu.style.left = `${offsetLeft}px`;
         submenu.classList.remove("hidden");
+        if (this.subMenuOpened) {
+            if (this.openedSubMenu)
+                this.openedSubMenu.close();
+            this.openedSubMenu = new SubMenu(menuId);
+        }
     }
     closeSubMenus() {
         let subs = Array.from(document.getElementsByClassName("submenu"));

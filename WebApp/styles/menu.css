@@ -34,6 +34,12 @@
     color: white;
 }
 
+#menubar.subMenuOpened > li.selected
+{
+    background-color: rgb(235,235,255);
+    color: black;
+}
+
 .submenu
 {
     position: absolute;
@@ -72,6 +78,12 @@
 .submenu tr td
 {
     padding: 5px;
+}
+
+.submenu tr.selected
+{
+    background-color: blue;
+    color: white;
 }
 
 .submenu tr td:first-child
