@@ -62,9 +62,13 @@ class Commander
     dragOver(x: number, y: number)
     {
         if (this.leftView.isMouseInTableView(x, y))
-            console.log(`Drag: ${x}, ${y}`);
+        {
+            // console.log(`Drag: ${x}, ${y}`);
+        }
         if (this.rightView.isMouseInTableView(x, y))
-            console.log(`Drag: ${x}, ${y}`);
+        {
+            //console.log(`Drag: ${x}, ${y}`);
+        }
     }
 
     dragLeave()

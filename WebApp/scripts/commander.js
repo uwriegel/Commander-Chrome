@@ -43,10 +43,12 @@ class Commander {
         return this.focusedView;
     }
     dragOver(x, y) {
-        if (this.leftView.isMouseInTableView(x, y))
-            console.log(`Drag: ${x}, ${y}`);
-        if (this.rightView.isMouseInTableView(x, y))
-            console.log(`Drag: ${x}, ${y}`);
+        if (this.leftView.isMouseInTableView(x, y)) {
+            // console.log(`Drag: ${x}, ${y}`);
+        }
+        if (this.rightView.isMouseInTableView(x, y)) {
+            //console.log(`Drag: ${x}, ${y}`);
+        }
     }
     dragLeave() {
         this.leftView.dragLeave();

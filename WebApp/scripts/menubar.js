@@ -1,11 +1,8 @@
-// TODO: Separatoren nicht fokussierbar machen
-// TODO: Beim Focusout im Submenu Menu schließen
-// TODO: Wenn Submenu offen, und man geht mit der Maus weiter, Submenu schließen, sodass wieder auf Maussteuerung umgfeschaltet wird
 class MenuBar {
     constructor() {
         this.menuBar = document.getElementById("menubar");
         this.menuBar.addEventListener("focusout", evt => {
-            if (!this.subMenuOpened && !this.menuBar.contains(evt.relatedTarget))
+            if (!(this.subMenuOpened && this.keyboardActivated) && !this.menuBar.contains(evt.relatedTarget))
                 this.close();
         });
         this.initializeMouseHandler();
@@ -67,6 +64,10 @@ class MenuBar {
                     break;
                 case 37:
                     {
+                        if (this.openedSubMenu) {
+                            this.openedSubMenu.close();
+                            this.openedSubMenu = null;
+                        }
                         let li = this.menuBar.querySelector("#menubar>li.selected");
                         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
                         var i = (lis).findIndex(n => n == li);
@@ -83,6 +84,10 @@ class MenuBar {
                     break;
                 case 39:
                     {
+                        if (this.openedSubMenu) {
+                            this.openedSubMenu.close();
+                            this.openedSubMenu = null;
+                        }
                         let li = this.menuBar.querySelector("#menubar>li.selected + li");
                         if (!li)
                             li = this.menuBar.querySelector("#menubar>li");
@@ -93,7 +98,7 @@ class MenuBar {
                 case 40:
                     {
                         if (evt.target.nodeName == "LI") {
-                            console.log("Schwein");
+                            this.keyboardActivated = true;
                             this.setSubMenuOpened();
                             let li = this.menuBar.querySelector("#menubar>li.selected");
                             this.focusLi(li);
@@ -128,6 +133,22 @@ class MenuBar {
         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
         lis.forEach(n => {
             n.onmouseover = evt => {
+                if (this.keyboardActivated) {
+                    this.close();
+                    var li = evt.target.closest("li");
+                    var selected = false;
+                    if (li.classList.contains("selected"))
+                        selected = true;
+                    if (!this.isActive)
+                        this.setActive();
+                    this.subMenuOpened = true;
+                    this.clearSelection();
+                    if (!selected)
+                        this.focusLi(li);
+                    else
+                        this.close();
+                    return;
+                }
                 this.clearSelection();
                 this.focusLi(evt.currentTarget);
             };
@@ -179,7 +200,8 @@ class MenuBar {
         this.acceleratorInitiated = false;
         this.focusedView.focus();
         this.setSubMenuClosed();
-        this.openedSubMenu.close();
+        if (this.openedSubMenu)
+            this.openedSubMenu.close();
         this.openedSubMenu = null;
         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
         lis.forEach(n => n.onmouseover = null);
@@ -188,10 +210,10 @@ class MenuBar {
         let submenu = document.getElementById(menuId);
         submenu.style.left = `${offsetLeft}px`;
         submenu.classList.remove("hidden");
-        if (this.subMenuOpened) {
+        if (this.subMenuOpened && this.keyboardActivated) {
             if (this.openedSubMenu)
                 this.openedSubMenu.close();
-            this.openedSubMenu = new SubMenu(menuId);
+            this.openedSubMenu = new SubMenu(menuId, () => this.close());
         }
     }
     closeSubMenus() {
