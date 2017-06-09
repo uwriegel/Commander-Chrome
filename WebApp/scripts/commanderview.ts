@@ -222,7 +222,7 @@ class CommanderView
                     this.tableView.downOne()
                     break
                 case 46: // DEL
-                    this.processOperation(null, n => this.getDeleteOperationData(n), r => this.operateDelete(r))
+                    this.executeDelete()
                     break
                 case 69: // e
                     if (e.ctrlKey)
@@ -239,10 +239,10 @@ class CommanderView
                     }
                     break
                 case 107: // NUM +
-                    this.itemsSorter.selectAll(true)
+                    this.selectAll()
                     break
                 case 109: // NUM -
-                    this.itemsSorter.selectAll(false)
+                    this.selectNone()
                     break
                 case 112: // F1
                     if (!e.ctrlKey)
@@ -255,16 +255,10 @@ class CommanderView
                     this.executeRename(e.ctrlKey)
                     break;
                 case 116: // F5
-                    this.processOperation(null, n => this.getCopyOperationData(n), (result: OperationCheckResult) =>
-                    {
-                        this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false)
-                    })
+                    this.executeCopy()
                     break
                 case 117: // F6
-                    this.processOperation(null, n => this.getMoveOperationData(n), (result: OperationCheckResult) =>
-                    {
-                        this.operateFile(result, "Möchtest Du die ausgewählten Dateien verschieben?", true)
-                    })
+                    this.executeMove()
                     break
                 case 118: // F7
                     this.createDirectory()
@@ -457,6 +451,135 @@ class CommanderView
         this.dragStarted = false
         if (refresh)
             this.refresh()
+    }
+
+    async executeRename(ctrlKey: boolean)
+    {
+        if (ctrlKey)
+        {
+            Dialog.initialize("Erweitertes Umbenennen")
+            this.extendedRename = null
+            this.itemsSorter.RegisterSelectionChange(null)
+
+            var extendedRename = Dialog.addExtendedRename(this.itemsSorter, this.tableView)
+            Dialog.setOkCancel(dialogResult =>
+            {
+                if (dialogResult == DialogResult.OK)
+                {
+                    this.extendedRename = extendedRename
+                    this.itemsSorter.RegisterSelectionChange(this.extendedRename)
+
+                    this.extendedRename.Columns = new ColumnsControl([
+                        {
+                            item: "Name",
+                            class: "",
+                            itemSortKind: ItemSortKind.Name
+                        },
+                        {
+                            item: "Neu",
+                            class: "it-new",
+                            itemSortKind: ItemSortKind.Date
+                        },
+                        {
+                            item: "Erw.",
+                            class: "it-extension",
+                            itemSortKind: ItemSortKind.Extension
+                        },
+                        {
+                            item: "Größe",
+                            class: "it-size",
+                            itemSortKind: ItemSortKind.Size
+                        },
+                        {
+                            item: "Datum",
+                            class: "it-time",
+                            itemSortKind: ItemSortKind.Date
+                        }], this.id + '-columns', this.itemsSorter)
+                }
+                this.refresh();
+            })
+            Dialog.show()
+        }
+        else
+        {
+            if (this.extendedRename)
+            {
+                var result = await this.extendedRename.execute(this.itemsModel.CurrentDirectory, this.itemsModel.getSelectedItems())
+                switch (result)
+                {
+                    case OperationCheck.OK:
+                        this.refresh()
+                        break
+                    case OperationCheck.Cancelled:
+                        Dialog.initialize("Abgebrochen")
+                        Dialog.show()
+                        break
+                }
+            }
+            else
+            {
+                var currentIndex = this.tableView.getCurrentItemIndex()
+                var item = <Item>this.itemsSorter.getItem(currentIndex)
+                if (item.kind == ItemsKind.Directory || item.kind == ItemsKind.File || item.kind == ItemsKind.Favorite)
+                {
+                    var count
+                    if (item.kind == ItemsKind.File)
+                    {
+                        var name = FileHelper.getNameOnly(item.name)
+                        count = name.length
+                    }
+                    this.rename(item, count)
+                }
+            }
+        }
+    }
+
+    executeCopy()
+    {
+        this.processOperation(null, n => this.getCopyOperationData(n), (result: OperationCheckResult) =>
+        {
+            this.operateFile(result, "Möchtest Du die ausgewählten Dateien kopieren?", false)
+        })
+    }
+
+    executeMove()
+    {
+        this.processOperation(null, n => this.getMoveOperationData(n), (result: OperationCheckResult) =>
+        {
+            this.operateFile(result, "Möchtest Du die ausgewählten Dateien verschieben?", true)
+        })
+    }
+
+    executeDelete()
+    {
+        this.processOperation(null, n => this.getDeleteOperationData(n), r => this.operateDelete(r))
+    }
+
+    executeShowProperties()
+    {
+        var item = this.tableView.getCurrentItemIndex()
+        if (item)
+            this.processItem(item, false, true)
+    }
+
+    gotoFirst()
+    {
+        this.tableView.pos1()
+    }
+
+    showFavorites()
+    {
+        this.changeDirectory("Favoriten")
+    }
+
+    selectAll()
+    {
+        this.itemsSorter.selectAll(true)
+    }
+
+    selectNone()
+    {
+        this.itemsSorter.selectAll(false)
     }
 
     private processItem(itemIndex: number, openWith: boolean, showProperties: boolean, fromOtherView?: boolean)
@@ -848,87 +971,6 @@ class CommanderView
             }
         })
         Dialog.show()
-    }
-
-    private async executeRename(ctrlKey: boolean)
-    {
-        if (ctrlKey)
-        {
-            Dialog.initialize("Erweitertes Umbenennen")
-            this.extendedRename = null
-            this.itemsSorter.RegisterSelectionChange(null)
-
-            var extendedRename = Dialog.addExtendedRename(this.itemsSorter, this.tableView)
-            Dialog.setOkCancel(dialogResult =>
-            {
-                if (dialogResult == DialogResult.OK)
-                {
-                    this.extendedRename = extendedRename
-                    this.itemsSorter.RegisterSelectionChange(this.extendedRename)
-
-                    this.extendedRename.Columns = new ColumnsControl([
-                        {
-                            item: "Name",
-                            class: "",
-                            itemSortKind: ItemSortKind.Name
-                        },
-                        {
-                            item: "Neu",
-                            class: "it-new",
-                            itemSortKind: ItemSortKind.Date
-                        },
-                        {
-                            item: "Erw.",
-                            class: "it-extension",
-                            itemSortKind: ItemSortKind.Extension
-                        },
-                        {
-                            item: "Größe",
-                            class: "it-size",
-                            itemSortKind: ItemSortKind.Size
-                        },
-                        {
-                            item: "Datum",
-                            class: "it-time",
-                            itemSortKind: ItemSortKind.Date
-                        }], this.id + '-columns', this.itemsSorter)
-                }
-                this.refresh();
-            })
-            Dialog.show()
-        }
-        else
-        {
-            if (this.extendedRename)
-            {
-                var result = await this.extendedRename.execute(this.itemsModel.CurrentDirectory, this.itemsModel.getSelectedItems())
-                switch (result)
-                {
-                    case OperationCheck.OK:
-                        this.refresh()
-                        break
-                    case OperationCheck.Cancelled:
-                        Dialog.initialize("Abgebrochen")
-                        Dialog.show()
-                        break
-                }                   
-            }
-            else
-            {
-                var currentIndex = this.tableView.getCurrentItemIndex()
-                var item = <Item>this.itemsSorter.getItem(currentIndex)
-                if (item.kind == ItemsKind.Directory || item.kind == ItemsKind.File || item.kind == ItemsKind.Favorite)
-                {
-                    var count
-                    if (item.kind == ItemsKind.File)
-                    {
-                        var name = FileHelper.getNameOnly(item.name)
-                        count = name.length
-                    }
-                    this.rename(item, count)
-                }
-            }
-        }
     }
 
     private tableView: TableView

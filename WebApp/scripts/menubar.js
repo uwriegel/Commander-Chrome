@@ -57,6 +57,10 @@ class MenuBar {
                 case 9:
                     this.close();
                     break;
+                case 13:
+                    if (this.openedSubMenu)
+                        this.openedSubMenu.onEnter();
+                    break;
                 case 18:
                     break;
                 case 27:
@@ -106,6 +110,10 @@ class MenuBar {
                         else if (this.openedSubMenu)
                             this.openedSubMenu.onKeyDown();
                     }
+                    break;
+                default:
+                    if (this.openedSubMenu)
+                        this.openedSubMenu.onKey(evt.key);
                     break;
             }
             evt.stopPropagation();
@@ -185,7 +193,7 @@ class MenuBar {
                 subMenuId = "submenu3";
                 break;
             case "menubar4":
-                subMenuId = "submenu3";
+                subMenuId = "submenu4";
                 break;
         }
         this.openSubMenu(li.offsetLeft, subMenuId);

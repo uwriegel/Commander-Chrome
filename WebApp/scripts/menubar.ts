@@ -78,6 +78,10 @@
                 case 9: // TAB
                     this.close()
                     break
+                case 13: // Enter
+                    if (this.openedSubMenu)
+                        this.openedSubMenu.onEnter()
+                    break;
                 case 18:
                     break
                 case 27: // ESC
@@ -130,6 +134,10 @@
                         else if (this.openedSubMenu)
                             this.openedSubMenu.onKeyDown()
                     }
+                    break;
+                default:
+                    if (this.openedSubMenu)
+                        this.openedSubMenu.onKey(evt.key)
                     break;
             }
             evt.stopPropagation()
@@ -234,7 +242,7 @@
                 subMenuId = "submenu3"
                 break;
             case "menubar4":
-                subMenuId = "submenu3"
+                subMenuId = "submenu4"
                 break;
         }
         this.openSubMenu(li.offsetLeft, subMenuId)
