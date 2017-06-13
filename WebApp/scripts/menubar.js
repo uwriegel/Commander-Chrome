@@ -196,7 +196,7 @@ class MenuBar {
                 subMenuId = "submenu4";
                 break;
         }
-        this.openSubMenu(li.offsetLeft, subMenuId);
+        this.openSubMenu(li.offsetLeft, subMenuId, this.keyboardActivated);
     }
     close() {
         this.closeSubMenus();
@@ -206,22 +206,22 @@ class MenuBar {
         this.hasFocus = false;
         this.isActive = false;
         this.acceleratorInitiated = false;
-        this.focusedView.focus();
         this.setSubMenuClosed();
         if (this.openedSubMenu)
             this.openedSubMenu.close();
         this.openedSubMenu = null;
         let lis = Array.from(this.menuBar.querySelectorAll("#menubar>li"));
         lis.forEach(n => n.onmouseover = null);
+        setTimeout(() => this.focusedView.focus(), 100);
     }
-    openSubMenu(offsetLeft, menuId) {
+    openSubMenu(offsetLeft, menuId, keyboardActivated) {
         let submenu = document.getElementById(menuId);
         submenu.style.left = `${offsetLeft}px`;
         submenu.classList.remove("hidden");
-        if (this.subMenuOpened && this.keyboardActivated) {
+        if (this.subMenuOpened) {
             if (this.openedSubMenu)
                 this.openedSubMenu.close();
-            this.openedSubMenu = new SubMenu(menuId, () => this.close());
+            this.openedSubMenu = new SubMenu(menuId, keyboardActivated, () => this.close());
         }
     }
     closeSubMenus() {

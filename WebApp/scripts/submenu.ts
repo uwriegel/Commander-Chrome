@@ -1,12 +1,15 @@
 ﻿class SubMenu
 {
-    constructor(subMenuId: string, closeMenu: () => void)
+    constructor(subMenuId: string, keyboardActivated: boolean, closeMenu: () => void)
     {
         this.closeMenu = closeMenu
         this.subMenu = <HTMLTableElement>document.getElementById(subMenuId)
-        this.subMenu.classList.add("keyboardActivated")
-        let tr = this.subMenu.querySelector("tr")
-        this.focusTr(tr)
+        if (keyboardActivated)
+        {
+            this.subMenu.classList.add("keyboardActivated")
+            let tr = this.subMenu.querySelector("tr")
+            this.focusTr(tr)
+        }
         this.subMenu.addEventListener("focusout", this.onFocusOut)
         this.initializeMouseHandler()
     }
@@ -131,6 +134,11 @@
                 focused.selectNone()
                 break;
             case "menuShowHidden":
+                var checker = tr.querySelector(".checker")
+                if (checker.classList.contains("hidden"))
+                    checker.classList.remove("hidden")
+                else
+                    checker.classList.add("hidden")
                 break;
             case "menuDarkTheme":
                 break;
