@@ -67,9 +67,11 @@ var Connection = (function ()
         return invoke<GetItemsOutput>("getItems", input)
     }
 
-    function toggleHidden()
+    function showHidden(show: boolean)
     {
-        return invoke("toggleHidden", {})
+        return invoke("showHidden", {
+            show: show
+        })
     }
 
     function startExplorer(directory: string)
@@ -188,7 +190,7 @@ var Connection = (function ()
         addFileEventSource: addFileEventSource,
         addServiceEventSource: addServiceEventSource,
         getItems: getItems,
-        toggleHidden: toggleHidden,
+        showHidden: showHidden,
         startExplorer: startExplorer,
         checkFileOperation: checkFileOperation,
         createFolder: createFolder,

@@ -43,8 +43,8 @@ namespace Commander
                 case "rename":
                     Rename(service);
                     break;
-                case "toggleHidden":
-                    ToggleHidden(service);
+                case "showHidden":
+                    ShowHidden(service);
                     break;
                 case "startExplorer":
                     StartExplorer(service);
@@ -268,9 +268,9 @@ namespace Commander
             service.SendResult(result);
         }
 
-        void ToggleHidden(IService service)
+        void ShowHidden(IService service)
         {
-            showHidden = !showHidden;
+            showHidden = service.GetInput<ShowHidden>().show;
             service.SendResult(new object());
         }
 

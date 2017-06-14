@@ -12,6 +12,15 @@
         }
         this.subMenu.addEventListener("focusout", this.onFocusOut)
         this.initializeMouseHandler()
+
+        if (subMenuId == "submenu4")
+        {
+            var trCheck = document.querySelector("#menuShowHidden .checker")
+            if (localStorage["showHidden"] == "true")
+                trCheck.classList.remove("hidden")
+            else
+                trCheck.classList.add("hidden")
+        }
     }
 
     onKeyDown()
@@ -134,11 +143,7 @@
                 focused.selectNone()
                 break;
             case "menuShowHidden":
-                var checker = tr.querySelector(".checker")
-                if (checker.classList.contains("hidden"))
-                    checker.classList.remove("hidden")
-                else
-                    checker.classList.add("hidden")
+                commanderInstance.showHidden(localStorage["showHidden"] != "true")
                 break;
             case "menuDarkTheme":
                 break;

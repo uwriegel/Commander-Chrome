@@ -9,5 +9,5 @@ using System.Threading.Tasks;
 class ShowHidden
 {
     [DataMember(EmitDefaultValue = false)]
-    public bool showHidden = false;
+    public bool show = false;
 }

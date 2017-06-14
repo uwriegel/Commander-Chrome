@@ -41,6 +41,9 @@ class Commander
         viewerElement.onclick = () =>this.focusedView.focus()
 
         this.initializeOnKeyDownHandler();
+
+        if (localStorage["showHidden"] == "true")
+            this.showHidden(true)
     }
 
     getCommanderView(id: string)
@@ -114,7 +117,7 @@ class Commander
                 case 72: // h
                     if (evt.ctrlKey)
                     {
-                        this.toggleHidden()
+                        this.showHidden(localStorage["showHidden"] != "true")
                         break
                     }
                     else
@@ -151,6 +154,14 @@ class Commander
         }
     }
 
+    async showHidden(show: boolean)
+    {
+        await Connection.showHidden(show)
+        localStorage["showHidden"] = show
+        this.leftView.refresh()
+        this.rightView.refresh()
+    }
+
     private currentItemChanged(item: Item, directory: string)
     {
         if (item)
@@ -164,13 +175,6 @@ class Commander
             this.footer.textContent = "Nichts selektiert"
             this.viewer.selectionChanged()
         }
-    }
-
-    private async toggleHidden()
-    {
-        await Connection.toggleHidden()
-        this.leftView.refresh()
-        this.rightView.refresh()
     }
 
     private leftView: CommanderView
