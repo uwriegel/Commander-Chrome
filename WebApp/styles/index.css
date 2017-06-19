@@ -129,7 +129,6 @@ footer {
     margin-left: 3px;
     margin-right: 3px;
     border-style: none;
-    background-color: white;
     width: calc(100% - 6px);
     outline-width: 0px;
 }
