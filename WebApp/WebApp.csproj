@@ -67,6 +67,7 @@
     <TypeScriptCompile Include="scripts\vgrid.ts" />
     <TypeScriptCompile Include="scripts\viewer.ts" />
     <TypeScriptCompile Include="scripts\waitingitem.ts" />
+    <Content Include="styles\dark.css" />
     <Content Include="styles\dialog.css" />
     <Content Include="styles\menu.css" />
     <Content Include="styles\tableView.css" />

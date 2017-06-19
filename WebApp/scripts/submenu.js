@@ -1,17 +1,16 @@
-var SubMenu = (function () {
-    function SubMenu(subMenuId, keyboardActivated, closeMenu) {
-        var _this = this;
-        this.onFocusOut = function (evt) {
-            if (!_this.subMenu.contains(evt.relatedTarget)) {
-                _this.close();
-                _this.closeMenu();
+class SubMenu {
+    constructor(subMenuId, keyboardActivated, closeMenu) {
+        this.onFocusOut = (evt) => {
+            if (!this.subMenu.contains(evt.relatedTarget)) {
+                this.close();
+                this.closeMenu();
             }
         };
         this.closeMenu = closeMenu;
         this.subMenu = document.getElementById(subMenuId);
         if (keyboardActivated) {
             this.subMenu.classList.add("keyboardActivated");
-            var tr = this.subMenu.querySelector("tr");
+            let tr = this.subMenu.querySelector("tr");
             this.focusTr(tr);
         }
         this.subMenu.addEventListener("focusout", this.onFocusOut);
@@ -22,54 +21,58 @@ var SubMenu = (function () {
                 trCheck.classList.remove("hidden");
             else
                 trCheck.classList.add("hidden");
+            trCheck = document.querySelector("#menuDarkTheme .checker");
+            if (localStorage["darkTheme"] == "true")
+                trCheck.classList.remove("hidden");
+            else
+                trCheck.classList.add("hidden");
         }
     }
-    SubMenu.prototype.onKeyDown = function () {
-        var tr = this.subMenu.querySelector("tr.selected");
-        var trs = Array.from(this.subMenu.querySelectorAll("tr.selectable"));
-        var i = (trs).findIndex(function (n) { return n == tr; });
+    onKeyDown() {
+        let tr = this.subMenu.querySelector("tr.selected");
+        let trs = Array.from(this.subMenu.querySelectorAll("tr.selectable"));
+        var i = (trs).findIndex(n => n == tr);
         tr = trs[i + 1];
         if (!tr)
             tr = trs[0];
         this.clearSelection();
         this.focusTr(tr);
-    };
-    SubMenu.prototype.onKeyUp = function () {
-        var tr = this.subMenu.querySelector("tr.selected");
-        var trs = Array.from(this.subMenu.querySelectorAll("tr.selectable"));
-        var i = (trs).findIndex(function (n) { return n == tr; });
+    }
+    onKeyUp() {
+        let tr = this.subMenu.querySelector("tr.selected");
+        let trs = Array.from(this.subMenu.querySelectorAll("tr.selectable"));
+        var i = (trs).findIndex(n => n == tr);
         tr = trs[i - 1];
         if (!tr)
             tr = trs[trs.length - 1];
         this.clearSelection();
         this.focusTr(tr);
-    };
-    SubMenu.prototype.onEnter = function () {
-        var tr = this.subMenu.querySelector("tr.selected");
+    }
+    onEnter() {
+        let tr = this.subMenu.querySelector("tr.selected");
         if (tr)
             this.onExecute(tr);
-    };
-    SubMenu.prototype.onKey = function (key) {
-        var accs = Array.from(this.subMenu.querySelectorAll(".accelerator"));
-        var acc = accs.find(function (n) { return n.innerText.toLowerCase() == key; });
+    }
+    onKey(key) {
+        let accs = Array.from(this.subMenu.querySelectorAll(".accelerator"));
+        let acc = accs.find(n => n.innerText.toLowerCase() == key);
         if (acc) {
-            var tr = acc.parentElement.parentElement;
+            let tr = acc.parentElement.parentElement;
             if (tr)
                 this.onExecute(tr);
         }
-    };
-    SubMenu.prototype.close = function () {
+    }
+    close() {
         this.clearSelection();
         this.subMenu.removeEventListener("focusout", this.onFocusOut);
-    };
-    SubMenu.prototype.initializeMouseHandler = function () {
-        var _this = this;
-        this.subMenu.onmousedown = function (evt) {
+    }
+    initializeMouseHandler() {
+        this.subMenu.onmousedown = evt => {
             var tr = evt.target.closest("tr");
-            _this.onExecute(tr);
+            this.onExecute(tr);
         };
-    };
-    SubMenu.prototype.onExecute = function (tr) {
+    }
+    onExecute(tr) {
         switch (tr.id) {
             case "menuRename":
                 var focused = commanderInstance.getFocused();
@@ -132,20 +135,20 @@ var SubMenu = (function () {
                 commanderInstance.showHidden(localStorage["showHidden"] != "true");
                 break;
             case "menuDarkTheme":
+                commanderInstance.darkTheme(localStorage["darkTheme"] != "true");
                 break;
             default:
                 return;
         }
         this.close();
         this.closeMenu();
-    };
-    SubMenu.prototype.clearSelection = function () {
-        Array.from(this.subMenu.querySelectorAll("tr")).forEach(function (n) { return n.classList.remove("selected"); });
-    };
-    SubMenu.prototype.focusTr = function (tr) {
+    }
+    clearSelection() {
+        Array.from(this.subMenu.querySelectorAll("tr")).forEach(n => n.classList.remove("selected"));
+    }
+    focusTr(tr) {
         tr.classList.add("selected");
         tr.focus();
-    };
-    return SubMenu;
-}());
+    }
+}
 //# sourceMappingURL=submenu.js.map

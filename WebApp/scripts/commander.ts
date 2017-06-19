@@ -44,6 +44,8 @@ class Commander
 
         if (localStorage["showHidden"] == "true")
             this.showHidden(true)
+        if (localStorage["darkTheme"] = "true")
+            this.darkTheme(true)
     }
 
     getCommanderView(id: string)
@@ -160,6 +162,27 @@ class Commander
         localStorage["showHidden"] = show
         this.leftView.refresh()
         this.rightView.refresh()
+    }
+
+    async darkTheme(activate: boolean)
+    {
+        if (activate)
+        {
+            var head = document.getElementsByTagName('head')[0]
+            var link = document.createElement('link')
+            link.rel = 'stylesheet'
+            link.id = 'darkThemeStylesheet'
+            link.type = 'text/css'
+            link.href = 'styles/dark.css'
+            link.media = 'all'
+            head.appendChild(link)
+        }
+        else
+        {
+            var styleSheet = document.getElementById("darkThemeStylesheet")
+            styleSheet.remove()
+        }
+        localStorage["darkTheme"] = activate
     }
 
     private currentItemChanged(item: Item, directory: string)

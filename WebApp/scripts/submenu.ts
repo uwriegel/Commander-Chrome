@@ -20,6 +20,12 @@
                 trCheck.classList.remove("hidden")
             else
                 trCheck.classList.add("hidden")
+
+            trCheck = document.querySelector("#menuDarkTheme .checker")
+            if (localStorage["darkTheme"] == "true")
+                trCheck.classList.remove("hidden")
+            else
+                trCheck.classList.add("hidden")
         }
     }
 
@@ -146,6 +152,7 @@
                 commanderInstance.showHidden(localStorage["showHidden"] != "true")
                 break;
             case "menuDarkTheme":
+                commanderInstance.darkTheme(localStorage["darkTheme"] != "true")
                 break;
             default:
                 return;

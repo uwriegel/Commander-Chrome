@@ -68,6 +68,8 @@ var Commander = (function () {
         this.initializeOnKeyDownHandler();
         if (localStorage["showHidden"] == "true")
             this.showHidden(true);
+        if (localStorage["darkTheme"] = "true")
+            this.darkTheme(true);
     }
     Commander.prototype.getCommanderView = function (id) {
         switch (id) {
@@ -166,6 +168,29 @@ var Commander = (function () {
                         this.rightView.refresh();
                         return [2 /*return*/];
                 }
+            });
+        });
+    };
+    Commander.prototype.darkTheme = function (activate) {
+        return __awaiter(this, void 0, void 0, function () {
+            var head, link, styleSheet;
+            return __generator(this, function (_a) {
+                if (activate) {
+                    head = document.getElementsByTagName('head')[0];
+                    link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.id = 'darkThemeStylesheet';
+                    link.type = 'text/css';
+                    link.href = 'styles/dark.css';
+                    link.media = 'all';
+                    head.appendChild(link);
+                }
+                else {
+                    styleSheet = document.getElementById("darkThemeStylesheet");
+                    styleSheet.remove();
+                }
+                localStorage["darkTheme"] = activate;
+                return [2 /*return*/];
             });
         });
     };
